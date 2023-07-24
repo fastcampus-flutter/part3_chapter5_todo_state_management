@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:fast_app_base/screen/main/tab/tab_item.dart';
 import 'package:fast_app_base/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
     return WillPopScope(
       onWillPop: _handleBackPressed,
       child: Scaffold(
-        extendBody: extendBody, //bottomNavigationBar 아래 영역 까지 그림
+        extendBody: extendBody,
+        //bottomNavigationBar 아래 영역 까지 그림
         drawer: const MenuDrawer(),
         body: Padding(
           padding: EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
@@ -45,6 +47,12 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
             child: pages,
           ),
         ),
+        floatingActionButton: _currentIndex == 0
+            ? FloatingActionButton(
+                onPressed: () {},
+                child: const Icon(EvaIcons.editOutline),
+              )
+            : null,
         bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
@@ -79,7 +87,7 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
     return Container(
       decoration: const BoxDecoration(
         boxShadow: [
-          BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 10),
+          BoxShadow(color: Colors.black12, spreadRadius: 3, blurRadius: 10),
         ],
       ),
       child: ClipRRect(

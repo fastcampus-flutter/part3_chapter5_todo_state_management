@@ -49,7 +49,6 @@ dependencies:
 
   #architecture
   event_bus: ^2.0.0
-  get: ^4.6.5
 
   #ui - resource
   eva_icons_flutter: ^3.1.0
