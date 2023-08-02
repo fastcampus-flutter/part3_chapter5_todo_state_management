@@ -5,7 +5,7 @@ class DarkAppColors extends AbstractThemeColors {
   const DarkAppColors();
 
   @override
-  Color get seedColor => AppColors.mediumBlue;
+  Color get seedColor => const Color(0xff316604);
 
   @override
   Color get activate => Colors.white;
