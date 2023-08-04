@@ -3,6 +3,7 @@ import 'package:fast_app_base/common/theme/custom_theme_app.dart';
 import 'package:fast_app_base/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 
+import 'data/memory/todo_data_change_notifier.dart';
 import 'data/memory/todo_data_holder.dart';
 
 class App extends StatefulWidget {
@@ -19,6 +20,8 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
   @override
   GlobalKey<NavigatorState> get navigatorKey => App.navigatorKey;
 
+  final notifier = TodoDataChangeNotifier();
+
   @override
   void initState() {
     super.initState();
@@ -33,11 +36,11 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return CustomThemeApp(
-      child: Builder(builder: (context) {
-        return TodoDataHolder(
-          key: ValueKey('todo'),
-          child: MaterialApp(
+    return TodoDataHolder(
+      todoDataChangeNotifier: notifier,
+      child: CustomThemeApp(
+        child: Builder(builder: (context) {
+          return MaterialApp(
             navigatorKey: App.navigatorKey,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
@@ -45,9 +48,9 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
             title: 'Image Finder',
             theme: context.themeType.themeData,
             home: const MainScreen(),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 

@@ -3,16 +3,17 @@ import 'package:fast_app_base/data/memory/vo_todo.dart';
 import 'package:flutter/material.dart';
 
 class TodoDataHolder extends InheritedWidget {
-  final TodoDataChangeNotifier todoDataChangeNotifier = TodoDataChangeNotifier();
+  final TodoDataChangeNotifier todoDataChangeNotifier;
 
-  TodoDataHolder({
+  const TodoDataHolder({
+    required this.todoDataChangeNotifier,
     required Widget child,
     Key? key,
   }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(TodoDataHolder oldWidget) {
-    return true;
+    return false;
   }
 
   void addTodo(Todo todo) {

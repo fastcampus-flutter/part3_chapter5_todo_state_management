@@ -25,7 +25,11 @@ class HomeFragment extends StatelessWidget {
             ],
           ),
           const EmptyExpanded(),
-          const TodoList(),
+          Row(
+            children: [
+              const TodoList().pSymmetric(h: 20),
+            ],
+          ),
           const EmptyExpanded()
         ],
       ),

@@ -13,3 +13,5 @@ class EmptyExpanded extends StatelessWidget {
     );
   }
 }
+
+const emptyExpanded = EmptyExpanded();

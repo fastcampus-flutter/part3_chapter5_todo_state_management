@@ -1,5 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:fast_app_base/common/common.dart';
+import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/common/util/app_keyboard_util.dart';
 import 'package:fast_app_base/common/widget/w_round_button.dart';
 import 'package:fast_app_base/data/memory/todo_data_holder.dart';
@@ -27,6 +28,7 @@ class WriteTodoBottomSheet extends DialogWidget<SimpleResult> {
 class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with AfterLayoutMixin {
   final todoTextEditingController = TextEditingController();
   final node = FocusNode();
+  DateTime? _selectedDate;
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
@@ -49,7 +51,22 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              '할일을 작성해주세요.'.text.size(18).bold.make(),
+              Row(
+                children: [
+                  '할일을 작성해주세요.'.text.size(18).bold.make(),
+                  emptyExpanded,
+                  if (_selectedDate != null)
+                    Tap(
+                      onTap: onTapChangedDate,
+                      child: _selectedDate!.formattedDate.text.make(),
+                    ),
+                  IconButton(
+                    padding: const EdgeInsets.all(15),
+                    onPressed: onTapChangedDate,
+                    icon: const Icon(Icons.calendar_month),
+                  ),
+                ],
+              ),
               const Height(20),
               Row(
                 children: [
@@ -74,8 +91,23 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
     );
   }
 
+  void onTapChangedDate() async {
+    final selectedDate = await showDatePicker(
+        context: context,
+        helpText: '목표일을 선택해주세요.',
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365 * 10)));
+    if (selectedDate != null) {
+      setState(() {
+        _selectedDate = selectedDate;
+      });
+    }
+  }
+
   void done(BuildContext context) {
-    TodoDataHolder.of(context).addTodo(Todo(title: todoTextEditingController.text));
+    TodoDataHolder.of(context)
+        .addTodo(Todo(title: todoTextEditingController.text)..dueDate = _selectedDate);
     widget.hide();
   }
 }

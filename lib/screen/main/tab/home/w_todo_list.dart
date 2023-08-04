@@ -1,5 +1,6 @@
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/data/memory/todo_data_holder.dart';
+import 'package:fast_app_base/screen/main/tab/home/w_todo_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/memory/vo_todo.dart';
@@ -20,7 +21,12 @@ class _TodoListState extends State<TodoList> {
         return todoList.isEmpty
             ? '노트를 작성해보세요'.text.make()
             : Column(
-                children: todoList.map((e) => e.title.text.make()).toList(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: todoList
+                    .map((e) => TodoItem(
+                          todo: e,
+                        ))
+                    .toList(),
               );
       },
     );
