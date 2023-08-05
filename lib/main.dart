@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 import 'app.dart';
 import 'common/data/preference/app_preferences.dart';
+import 'data/local/local_db.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await AppPreferences.init();
-
+  await LocalDB.init();
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ko')],
       fallbackLocale: const Locale('en'),

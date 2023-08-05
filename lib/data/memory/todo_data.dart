@@ -5,8 +5,19 @@ import 'package:fast_app_base/screen/main/write/d_write_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../local/local_db.dart';
+
 class TodoData extends GetxController {
   final RxList<Todo> todoList = <Todo>[].obs;
+
+  @override
+  void onInit() async {
+    final savedList = await LocalDB.getTodoList();
+    savedList.runIfSuccess((data) {
+      todoList.addAll(data.map((e) => Todo.fromDB(e)));
+    });
+    super.onInit();
+  }
 
   int get newId {
     return DateTime.now().millisecondsSinceEpoch;
@@ -21,6 +32,7 @@ class TodoData extends GetxController {
         dueDate: data.dueDate,
       );
       todoList.add(newTodo);
+      LocalDB.addTodo(newTodo.dbModel);
     });
   }
 
@@ -36,6 +48,7 @@ class TodoData extends GetxController {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
+    LocalDB.updateTodo(todo.dbModel);
     notify(todo);
   }
 
@@ -46,6 +59,7 @@ class TodoData extends GetxController {
       todo.title = data.title;
       todo.dueDate = data.dueDate;
     });
+    LocalDB.updateTodo(todo.dbModel);
     notify(todo);
   }
 
@@ -56,6 +70,7 @@ class TodoData extends GetxController {
 
   void removeTodo(Todo todo) {
     todoList.remove(todo);
+    LocalDB.removeTodo(todo.id);
   }
 }
 
