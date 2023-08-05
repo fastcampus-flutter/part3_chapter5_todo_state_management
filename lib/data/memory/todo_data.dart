@@ -34,6 +34,7 @@ class TodoData extends GetxController {
         id: newId,
         title: data.title,
         dueDate: data.dueDate,
+        createdTime: DateTime.now(),
       );
       todoList.add(newTodo);
       todoRepository.addTodo(newTodo);

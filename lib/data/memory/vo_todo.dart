@@ -1,42 +1,24 @@
+import 'package:fast_app_base/data/local/collection/todo_db_model.dart';
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../local/collection/todo_db_model.dart';
-
+part 'vo_todo.freezed.dart';
 part 'vo_todo.g.dart';
 
-@JsonSerializable()
-class Todo {
-  Todo({
-    required this.id,
-    required this.title,
-    required this.dueDate,
-    this.modifyTime,
-    TodoStatus? status,
-    DateTime? createdTime,
-  })  : createdTime = createdTime ?? DateTime.now(),
-        status = status ?? TodoStatus.incomplete;
+@unfreezed
+class Todo with _$Todo {
+  Todo._(); //private 생성자가 있어야, 클래스 메서드 추가가 가능
 
-  int id;
-  String title;
-  final DateTime createdTime;
-  DateTime? modifyTime;
-  DateTime dueDate;
-  TodoStatus status;
+  factory Todo({
+    required int id,
+    required DateTime createdTime,
+    DateTime? modifyTime,
+    required String title,
+    required DateTime dueDate,
+    @Default(TodoStatus.incomplete) TodoStatus status,
+  }) = _Todo;
 
   factory Todo.fromJson(Map<String, Object?> json) => _$TodoFromJson(json);
 
-  factory Todo.fromDB(TodoDbModel e) {
-    return Todo(
-        id: e.id,
-        title: e.title,
-        dueDate: e.dueDate,
-        createdTime: e.createdTime,
-        status: e.status,
-        modifyTime: e.modifyTime);
-  }
-
   TodoDbModel get dbModel => TodoDbModel(id, createdTime, modifyTime, title, dueDate, status);
-
-  Map<String, dynamic> toJson() => _$TodoToJson(this);
 }

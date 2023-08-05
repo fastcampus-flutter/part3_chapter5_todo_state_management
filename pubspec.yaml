@@ -68,7 +68,7 @@ dependencies:
   keyboard_utils_fork: ^0.0.4
 
   #network
-  dio: ^5.0.0
+  dio: ^5.3.2
   retrofit: ^4.0.1
   freezed: ^2.3.4
   freezed_annotation: ^2.2.0

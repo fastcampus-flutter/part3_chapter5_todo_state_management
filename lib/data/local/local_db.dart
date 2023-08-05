@@ -25,7 +25,7 @@ class LocalDB implements TodoRepository<LocalDBError> {
     try {
       debugPrint('get response success');
       final documents = await _isar.todoDbModels.filter().idGreaterThan(0).findAll();
-      return SimpleResult.success(documents.map((e) => Todo.fromDB(e)).toList());
+      return SimpleResult.success(documents.map((e) => e.createTodo()).toList());
     } catch (e) {
       debugPrint('get response fail');
       return SimpleResult.failure(
