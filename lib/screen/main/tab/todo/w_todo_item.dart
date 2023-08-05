@@ -15,7 +15,7 @@ class TodoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return RoundedContainer(
       margin: const EdgeInsets.symmetric(vertical: 3),
-      color: Colors.white,
+      color: context.appColors.itemBackground,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
