@@ -28,7 +28,7 @@ class _FireState extends State<Fire> {
   Widget build(BuildContext context) {
     return RiveAnimation.asset(
       "$baseRivePath/fire_button.riv",
-      stateMachines: ['State Machine 1'],
+      stateMachines: const ['State Machine 1'],
       onInit: (Artboard art) {
         controller = StateMachineController.fromArtboard(art, 'State Machine 1')!;
         controller.isActive = true;

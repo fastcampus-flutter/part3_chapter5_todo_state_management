@@ -42,6 +42,6 @@ class TodoDataHolder extends InheritedWidget {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    todoDataChangeNotifier.notifyListeners();
+    todoDataChangeNotifier.notify();
   }
 }

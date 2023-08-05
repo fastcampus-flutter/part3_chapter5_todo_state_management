@@ -19,7 +19,7 @@ class TodoItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (todo.dueDate != null) todo.dueDate!.relativeDays.text.size(10).medium.make(),
+          todo.dueDate.relativeDays.text.size(10).medium.make(),
           Row(
             children: [
               TodoStatusWidget(todo),

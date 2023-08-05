@@ -70,11 +70,10 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
                 children: [
                   '할일을 작성해주세요.'.text.size(18).bold.make(),
                   emptyExpanded,
-                  if (_selectedDate != null)
-                    Tap(
-                      onTap: onTapChangedDate,
-                      child: _selectedDate!.formattedDate.text.make(),
-                    ),
+                  Tap(
+                    onTap: onTapChangedDate,
+                    child: _selectedDate.formattedDate.text.make(),
+                  ),
                   IconButton(
                     padding: const EdgeInsets.all(15),
                     onPressed: onTapChangedDate,
@@ -110,7 +109,7 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
     final selectedDate = await showDatePicker(
         context: context,
         helpText: '목표일을 선택해주세요.',
-        initialDate: _selectedDate ?? DateTime.now(),
+        initialDate: _selectedDate,
         firstDate: DateTime.now().subtract(const Duration(days: 365)),
         lastDate: DateTime.now().add(const Duration(days: 365 * 10)));
     if (selectedDate != null) {

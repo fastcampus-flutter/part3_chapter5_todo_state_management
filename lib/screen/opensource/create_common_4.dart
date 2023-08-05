@@ -38,7 +38,7 @@ exhaustive, and do not form part of our licenses.
      Considerations for the public: By using one of our public
      licenses, a licensor grants the public permission to use the
      licensed material under specified terms and conditions. If
-     the licensor\'s permission is not necessary for any reason--for
+     the licensor's permission is not necessary for any reason--for
      example, because of any applicable exception or limitation to
      copyright--then that use is not regulated by the license. Our
      licenses grant only permissions under copyright and certain
@@ -78,7 +78,7 @@ Section 1 -- Definitions.
      Adapted Material is always produced where the Licensed Material is
      synched in timed relation with a moving image.
 
-  b. Adapter\'s License means the license You apply to Your Copyright
+  b. Adapter's License means the license You apply to Your Copyright
      and Similar Rights in Your contributions to Adapted Material in
      accordance with the terms and conditions of this Public License.
 
@@ -254,7 +254,7 @@ following conditions.
           information required by Section 3(a)(1)(A) to the extent
           reasonably practicable.
 
-       4. If You Share Adapted Material You produce, the Adapter\'s
+       4. If You Share Adapted Material You produce, the Adapter's
           License You apply must not prevent recipients of the Adapted
           Material from complying with this Public License.
 
