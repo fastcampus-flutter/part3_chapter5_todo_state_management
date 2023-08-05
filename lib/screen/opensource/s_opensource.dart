@@ -1,5 +1,6 @@
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/util/local_json.dart';
+import 'package:fast_app_base/screen/opensource/rive_resources.dart';
 import 'package:fast_app_base/screen/opensource/vo_package.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ class _OpensourceScreenState extends State<OpensourceScreen> {
 
   void initData() async {
     final list = await LocalJson.getObjectList<Package>("json/licenses.json");
+    list.insertAll(0, riveResources);
     setState(() {
       packageList = list;
     });
@@ -40,7 +42,7 @@ class _OpensourceScreenState extends State<OpensourceScreen> {
         itemBuilder: (context, index) => OpensourceItem(packageList[index]),
         itemCount: packageList.length,
         separatorBuilder: (BuildContext context, int index) {
-          return const Line().pSymmetric(h:20);
+          return const Line().pSymmetric(h: 20);
         },
       ),
     );

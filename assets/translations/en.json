@@ -3,6 +3,10 @@
   "clear_cache": "Clear Cache",
   "clear_cache_done": "Cache has been cleared.",
   "close": "Close",
+  "confirm": "Confirm",
   "done": "Done",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "tillToday": "Till Today",
+  "daysLeft": "{daysCount} days left",
+  "daysPassed": "{daysCount} days passed"
 }

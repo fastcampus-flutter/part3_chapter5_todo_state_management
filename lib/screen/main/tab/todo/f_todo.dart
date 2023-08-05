@@ -1,13 +1,17 @@
 import 'package:fast_app_base/common/common.dart';
+import 'package:fast_app_base/screen/main/tab/todo/w_todo_list.dart';
 import 'package:flutter/material.dart';
 
-import 'w_todo_list.dart';
-
-class HomeFragment extends StatelessWidget {
-  const HomeFragment({
+class TodoFragment extends StatefulWidget {
+  const TodoFragment({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<TodoFragment> createState() => _TodoFragmentState();
+}
+
+class _TodoFragmentState extends State<TodoFragment> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,11 +29,7 @@ class HomeFragment extends StatelessWidget {
             ],
           ),
           const EmptyExpanded(),
-          Row(
-            children: [
-              const TodoList().pSymmetric(h: 20),
-            ],
-          ),
+          const TodoList().pSymmetric(h: 20),
           const EmptyExpanded()
         ],
       ),

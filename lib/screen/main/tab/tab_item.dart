@@ -1,10 +1,10 @@
 import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/screen/main/tab/home/f_home.dart';
 import 'package:fast_app_base/screen/main/tab/search/f_search.dart';
+import 'package:fast_app_base/screen/main/tab/todo/f_todo.dart';
 import 'package:flutter/material.dart';
 
 enum TabItem {
-  home(Icons.event_note_outlined, 'ToDo', HomeFragment()),
+  home(Icons.event_note_outlined, 'ToDo', TodoFragment()),
   favorite(Icons.search, 'Search', SearchFragment());
 
   final IconData activeIcon;

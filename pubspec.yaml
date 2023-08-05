@@ -73,6 +73,7 @@ dependencies:
   freezed: ^2.3.4
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
+  rive: ^0.11.11
 
 dev_dependencies:
   flutter_test:
@@ -106,6 +107,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/json/
+    - assets/riv/
     - assets/image/
     - assets/image/icon/
     - assets/image/flag/

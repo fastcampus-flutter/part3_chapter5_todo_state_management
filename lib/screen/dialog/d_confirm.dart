@@ -21,7 +21,7 @@ class ConfirmDialog extends DialogWidget<SimpleResult> {
     this.fontSize = 14,
     this.cancelable = true,
     this.textAlign = TextAlign.start,
-  })  : buttonText = buttonText ?? 'close'.tr(),
+  })  : buttonText = buttonText ?? 'confirm'.tr(),
         cancelButtonText = cancelButtonText ?? 'cancel'.tr();
 
   @override
