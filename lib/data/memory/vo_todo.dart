@@ -9,7 +9,7 @@ class Todo {
 
   String title;
   String? content;
-  DateTime createdTime;
+  final DateTime createdTime;
   DateTime? modifyTime;
   DateTime dueDate;
   TodoStatus status;

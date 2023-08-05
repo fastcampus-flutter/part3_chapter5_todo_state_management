@@ -2,6 +2,7 @@ import 'package:fast_app_base/data/memory/todo_data_change_notifier.dart';
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
+import 'package:fast_app_base/screen/main/write/d_write_todo.dart';
 import 'package:flutter/material.dart';
 
 class TodoDataHolder extends InheritedWidget {
@@ -18,8 +19,11 @@ class TodoDataHolder extends InheritedWidget {
     return false;
   }
 
-  void addTodo(Todo todo) {
-    todoDataChangeNotifier.addTodo(todo);
+  void addTodo() async {
+    final result = await WriteTodoBottomSheet().show();
+    result?.runIfSuccess((data) {
+      todoDataChangeNotifier.addTodo(data);
+    });
   }
 
   static TodoDataHolder _of(BuildContext context) {
@@ -45,7 +49,15 @@ class TodoDataHolder extends InheritedWidget {
     todoDataChangeNotifier.notify();
   }
 
-  editTodo(Todo todo) async {}
+  editTodo(Todo todo) async {
+    final result = await WriteTodoBottomSheet(todoForEdit: todo).show();
+    result?.runIfSuccess((data) {
+      todo.modifyTime = DateTime.now();
+      todo.title = data.title;
+      todo.dueDate = data.dueDate;
+      todoDataChangeNotifier.notify();
+    });
+  }
 }
 
 extension TodoContextExtension on BuildContext {

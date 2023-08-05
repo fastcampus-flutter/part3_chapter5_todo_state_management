@@ -19,14 +19,16 @@ class _TodoListState extends State<TodoList> {
       valueListenable: context.todoDataHolder.todoDataChangeNotifier,
       builder: (BuildContext context, List<Todo> todoList, Widget? child) {
         return todoList.isEmpty
-            ? '노트를 작성해보세요'.text.size(30).make()
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: todoList
-                    .map((e) => TodoItem(
-                          todo: e,
-                        ))
-                    .toList(),
+            ? '할일을 작성해보세요'.text.size(30).makeCentered()
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: todoList
+                      .map((e) => TodoItem(
+                            todo: e,
+                          ))
+                      .toList(),
+                ),
               );
       },
     );

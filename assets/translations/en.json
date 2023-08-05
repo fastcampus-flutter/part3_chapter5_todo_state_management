@@ -7,6 +7,7 @@
   "done": "Done",
   "cancel": "Cancel",
   "tillToday": "Till Today",
+  "tillTomorrow": "Till Tomorrow",
   "daysLeft": "{daysCount} days left",
   "daysPassed": "{daysCount} days passed"
 }

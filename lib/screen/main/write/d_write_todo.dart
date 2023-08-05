@@ -31,6 +31,7 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
   final todoTextEditingController = TextEditingController();
   final node = FocusNode();
   late DateTime _selectedDate;
+  bool showRedTextLine = false;
 
   @override
   void initState() {
@@ -76,6 +77,13 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
                 child: TextField(
                   focusNode: node,
                   controller: todoTextEditingController,
+                  decoration: InputDecoration(
+                    focusedBorder: !showRedTextLine
+                        ? null
+                        : const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                          ),
+                  ),
                   onEditingComplete: () => done(context),
                 ),
               ),
@@ -107,7 +115,9 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
 
   void done(BuildContext context) {
     if (todoTextEditingController.text.trim().isEmpty) {
-      context.showSnackbar('할일 내용을 입력해주세요.');
+      setState(() {
+        showRedTextLine = true;
+      });
       return;
     }
 
