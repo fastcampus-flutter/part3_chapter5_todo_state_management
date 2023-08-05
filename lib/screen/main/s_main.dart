@@ -1,5 +1,5 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:fast_app_base/data/memory/todo_data_holder.dart';
+import 'package:fast_app_base/data/memory/todo_data.dart';
 import 'package:fast_app_base/screen/main/tab/tab_item.dart';
 import 'package:fast_app_base/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,8 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+class MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin, TodoDataProvider {
   TabItem _currentTab = TabItem.home;
   final tabs = [TabItem.home, TabItem.favorite];
   final List<GlobalKey<NavigatorState>> navigatorKeys = [];
@@ -52,7 +53,7 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
         floatingActionButton: _currentIndex == 0
             ? FloatingActionButton(
                 onPressed: () async {
-                  context.todoDataHolder.addTodo(context);
+                  todoData.addTodo(context);
                 },
                 child: const Icon(EvaIcons.plus),
               )
