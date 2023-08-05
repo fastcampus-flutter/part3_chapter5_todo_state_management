@@ -16,7 +16,7 @@ class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: TodoDataHolder.of(context).todoDataChangeNotifier,
+      valueListenable: context.todoDataHolder.todoDataChangeNotifier,
       builder: (BuildContext context, List<Todo> todoList, Widget? child) {
         return todoList.isEmpty
             ? '노트를 작성해보세요'.text.size(30).make()

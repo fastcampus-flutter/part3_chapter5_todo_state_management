@@ -22,7 +22,7 @@ class TodoDataHolder extends InheritedWidget {
     todoDataChangeNotifier.addTodo(todo);
   }
 
-  static TodoDataHolder of(BuildContext context) {
+  static TodoDataHolder _of(BuildContext context) {
     TodoDataHolder inherited = (context.dependOnInheritedWidgetOfExactType<TodoDataHolder>())!;
     return inherited;
   }
@@ -44,4 +44,10 @@ class TodoDataHolder extends InheritedWidget {
     }
     todoDataChangeNotifier.notify();
   }
+
+  editTodo(Todo todo) async {}
+}
+
+extension TodoContextExtension on BuildContext {
+  TodoDataHolder get todoDataHolder => TodoDataHolder._of(this);
 }

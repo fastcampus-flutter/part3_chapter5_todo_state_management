@@ -3,16 +3,15 @@ import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/common/util/app_keyboard_util.dart';
 import 'package:fast_app_base/common/widget/w_round_button.dart';
-import 'package:fast_app_base/data/memory/todo_data_holder.dart';
 import 'package:fast_app_base/data/simple_result.dart';
 import 'package:flutter/material.dart';
 import 'package:nav/dialog/dialog.dart';
 import 'package:nav/enum/enum_nav_ani.dart';
 
-import '../../../common/widget/dialog_scaffold.dart';
+import '../../../common/widget/bottom_dialog_scaffold.dart';
 import '../../../data/memory/vo_todo.dart';
 
-class WriteTodoBottomSheet extends DialogWidget<SimpleResult> {
+class WriteTodoBottomSheet extends DialogWidget<SimpleResult<Todo, void>> {
   final Todo? todoForEdit;
 
   WriteTodoBottomSheet({
@@ -52,55 +51,42 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
 
   @override
   Widget build(BuildContext context) {
-    return DialogScaffold(
-      body: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 20, right: 15, left: 15),
-          decoration: BoxDecoration(
-              color: context.backgroundColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return BottomDialogScaffold(
+      body: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  '할일을 작성해주세요.'.text.size(18).bold.make(),
-                  emptyExpanded,
-                  Tap(
-                    onTap: onTapChangedDate,
-                    child: _selectedDate.formattedDate.text.make(),
-                  ),
-                  IconButton(
-                    padding: const EdgeInsets.all(15),
-                    onPressed: onTapChangedDate,
-                    icon: const Icon(Icons.calendar_month),
-                  ),
-                ],
+              '할일을 작성해주세요.'.text.size(18).bold.make(),
+              emptyExpanded,
+              Tap(
+                onTap: onTapChangedDate,
+                child: _selectedDate.formattedDate.text.make(),
               ),
-              const Height(20),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      focusNode: node,
-                      controller: todoTextEditingController,
-                      onEditingComplete: () => done(context),
-                    ),
-                  ),
-                  RoundButton(
-                      text: '추가',
-                      onTap: () {
-                        done(context);
-                      })
-                ],
+              IconButton(
+                padding: const EdgeInsets.all(15),
+                onPressed: onTapChangedDate,
+                icon: const Icon(Icons.calendar_month),
               ),
             ],
           ),
-        ),
+          const Height(20),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  focusNode: node,
+                  controller: todoTextEditingController,
+                  onEditingComplete: () => done(context),
+                ),
+              ),
+              RoundButton(
+                  text: '추가',
+                  onTap: () {
+                    done(context);
+                  })
+            ],
+          )
+        ],
       ),
     );
   }
@@ -120,8 +106,12 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
   }
 
   void done(BuildContext context) {
-    TodoDataHolder.of(context)
-        .addTodo(Todo(title: todoTextEditingController.text, dueDate: _selectedDate));
-    widget.hide();
+    if (todoTextEditingController.text.trim().isEmpty) {
+      context.showSnackbar('할일 내용을 입력해주세요.');
+      return;
+    }
+
+    widget.hide(
+        SimpleResult.success(Todo(title: todoTextEditingController.text, dueDate: _selectedDate)));
   }
 }

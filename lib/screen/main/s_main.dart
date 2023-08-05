@@ -54,7 +54,7 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
                 onPressed: () async {
                   WriteTodoBottomSheet().show();
                 },
-                child: const Icon(EvaIcons.editOutline),
+                child: const Icon(EvaIcons.plus),
               )
             : null,
         bottomNavigationBar: _buildBottomNavigationBar(context),

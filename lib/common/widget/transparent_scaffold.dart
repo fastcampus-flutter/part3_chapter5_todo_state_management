@@ -49,7 +49,7 @@ enum _ScaffoldSlot {
   statusBar,
 }
 
-/// Manages [SnackBar]s and [MaterialBanner]s for descendant [DialogScaffold]s.
+/// Manages [SnackBar]s and [MaterialBanner]s for descendant [TransparentScaffold]s.
 ///
 /// {@youtube 560 315 https://www.youtube.com/watch?v=lytQi-slT5Y}
 ///
@@ -61,7 +61,7 @@ enum _ScaffoldSlot {
 /// [ScaffoldMessengerState.showSnackBar] or the
 /// [ScaffoldMessengerState.showMaterialBanner] functions.
 ///
-/// When the [ScaffoldMessenger] has nested [DialogScaffold] descendants, the
+/// When the [ScaffoldMessenger] has nested [TransparentScaffold] descendants, the
 /// ScaffoldMessenger will only present the notification to the root Scaffold of
 /// the subtree of Scaffolds. In order to show notifications for the inner, nested
 /// Scaffolds, set a new scope by instantiating a new ScaffoldMessenger in
@@ -85,7 +85,7 @@ enum _ScaffoldSlot {
 ///    has a [ScaffoldMessenger] ancestor.
 ///  * Cookbook: [Display a SnackBar](https://flutter.dev/docs/cookbook/design/snackbars)
 class ScaffoldMessenger extends StatefulWidget {
-  /// Creates a widget that manages [SnackBar]s for [DialogScaffold] descendants.
+  /// Creates a widget that manages [SnackBar]s for [TransparentScaffold] descendants.
   const ScaffoldMessenger({
     super.key,
     required this.child,
@@ -162,14 +162,15 @@ class ScaffoldMessenger extends StatefulWidget {
 /// State for a [ScaffoldMessenger].
 ///
 /// A [ScaffoldMessengerState] object can be used to [showSnackBar] or
-/// [showMaterialBanner] for every registered [DialogScaffold] that is a descendant of
+/// [showMaterialBanner] for every registered [TransparentScaffold] that is a descendant of
 /// the associated [ScaffoldMessenger]. Scaffolds will register to receive
 /// [SnackBar]s and [MaterialBanner]s from their closest ScaffoldMessenger
 /// ancestor.
 ///
 /// Typically obtained via [ScaffoldMessenger.of].
 class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProviderStateMixin {
-  final LinkedHashSet<DialogScaffoldState> _scaffolds = LinkedHashSet<DialogScaffoldState>();
+  final LinkedHashSet<TransparentScaffoldState> _scaffolds =
+      LinkedHashSet<TransparentScaffoldState>();
   final Queue<ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>>
       _materialBanners =
       Queue<ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>>();
@@ -197,7 +198,7 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
     super.didChangeDependencies();
   }
 
-  void _register(DialogScaffoldState scaffold) {
+  void _register(TransparentScaffoldState scaffold) {
     _scaffolds.add(scaffold);
 
     if (_isRoot(scaffold)) {
@@ -211,14 +212,14 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
     }
   }
 
-  void _unregister(DialogScaffoldState scaffold) {
+  void _unregister(TransparentScaffoldState scaffold) {
     final bool removed = _scaffolds.remove(scaffold);
     // ScaffoldStates should only be removed once.
     assert(removed);
   }
 
   void _updateScaffolds() {
-    for (final DialogScaffoldState scaffold in _scaffolds) {
+    for (final TransparentScaffoldState scaffold in _scaffolds) {
       if (_isRoot(scaffold)) {
         scaffold._updateSnackBar();
         scaffold._updateMaterialBanner();
@@ -228,15 +229,15 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
 
   // Nested Scaffolds are handled by the ScaffoldMessenger by only presenting a
   // MaterialBanner or SnackBar in the root Scaffold of the nested set.
-  bool _isRoot(DialogScaffoldState scaffold) {
-    final DialogScaffoldState? parent =
-        scaffold.context.findAncestorStateOfType<DialogScaffoldState>();
+  bool _isRoot(TransparentScaffoldState scaffold) {
+    final TransparentScaffoldState? parent =
+        scaffold.context.findAncestorStateOfType<TransparentScaffoldState>();
     return parent == null || !_scaffolds.contains(parent);
   }
 
   // SNACKBAR API
 
-  /// Shows a [SnackBar] across all registered [DialogScaffold]s. Scaffolds register
+  /// Shows a [SnackBar] across all registered [TransparentScaffold]s. Scaffolds register
   /// to receive snack bars from their closest [ScaffoldMessenger] ancestor.
   /// If there are several registered scaffolds the snack bar is shown
   /// simultaneously on all of them.
@@ -265,15 +266,15 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
   /// ## Relative positioning of floating SnackBars
   ///
   /// A [SnackBar] with [SnackBar.behavior] set to [SnackBarBehavior.floating] is
-  /// positioned above the widgets provided to [DialogScaffold.floatingActionButton],
-  /// [DialogScaffold.persistentFooterButtons], and [DialogScaffold.bottomNavigationBar].
+  /// positioned above the widgets provided to [TransparentScaffold.floatingActionButton],
+  /// [TransparentScaffold.persistentFooterButtons], and [TransparentScaffold.bottomNavigationBar].
   /// If some or all of these widgets take up enough space such that the SnackBar
   /// would not be visible when positioned above them, an error will be thrown.
   /// In this case, consider constraining the size of these widgets to allow room for
   /// the SnackBar to be visible.
   ///
   /// {@tool dartpad}
-  /// Here is an example showing that a floating [SnackBar] appears above [DialogScaffold.floatingActionButton].
+  /// Here is an example showing that a floating [SnackBar] appears above [TransparentScaffold.floatingActionButton].
   ///
   /// ** See code in examples/api/lib/material/scaffold/scaffold_messenger_state.show_snack_bar.1.dart **
   /// {@end-tool}
@@ -368,7 +369,7 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
   }
 
   /// Removes the current [SnackBar] (if any) immediately from registered
-  /// [DialogScaffold]s.
+  /// [TransparentScaffold]s.
   ///
   /// The removed snack bar does not run its normal exit animation. If there are
   /// any queued snack bars, they begin their entrance animation immediately.
@@ -424,7 +425,7 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
 
   // MATERIAL BANNER API
 
-  /// Shows a [MaterialBanner] across all registered [DialogScaffold]s. Scaffolds register
+  /// Shows a [MaterialBanner] across all registered [TransparentScaffold]s. Scaffolds register
   /// to receive material banners from their closest [ScaffoldMessenger] ancestor.
   /// If there are several registered scaffolds the material banner is shown
   /// simultaneously on all of them.
@@ -501,7 +502,7 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
   }
 
   /// Removes the current [MaterialBanner] (if any) immediately from registered
-  /// [DialogScaffold]s.
+  /// [TransparentScaffold]s.
   ///
   /// The removed material banner does not run its normal exit animation. If there are
   /// any queued material banners, they begin their entrance animation immediately.
@@ -611,7 +612,7 @@ class _ScaffoldMessengerScope extends InheritedWidget {
 
 /// A snapshot of a transition between two [FloatingActionButtonLocation]s.
 ///
-/// [DialogScaffoldState] uses this to seamlessly change transition animations
+/// [TransparentScaffoldState] uses this to seamlessly change transition animations
 /// when a running [FloatingActionButtonLocation] transition is interrupted by a new transition.
 @immutable
 class _TransitionSnapshotFabLocation extends FloatingActionButtonLocation {
@@ -637,10 +638,10 @@ class _TransitionSnapshotFabLocation extends FloatingActionButtonLocation {
   }
 }
 
-/// Geometry information for [DialogScaffold] components after layout is finished.
+/// Geometry information for [TransparentScaffold] components after layout is finished.
 ///
 /// To get a [ValueNotifier] for the scaffold geometry of a given
-/// [BuildContext], use [DialogScaffold.geometryOf].
+/// [BuildContext], use [TransparentScaffold.geometryOf].
 ///
 /// The ScaffoldGeometry is only available during the paint phase, because
 /// its value is computed during the animation and layout phases prior to painting.
@@ -649,23 +650,23 @@ class _TransitionSnapshotFabLocation extends FloatingActionButtonLocation {
 /// which uses the [ScaffoldGeometry] to paint a notch around the
 /// [FloatingActionButton].
 ///
-/// For information about the [DialogScaffold]'s geometry that is used while laying
+/// For information about the [TransparentScaffold]'s geometry that is used while laying
 /// out the [FloatingActionButton], see [ScaffoldPrelayoutGeometry].
 @immutable
 class ScaffoldGeometry {
-  /// Create an object that describes the geometry of a [DialogScaffold].
+  /// Create an object that describes the geometry of a [TransparentScaffold].
   const ScaffoldGeometry({
     this.bottomNavigationBarTop,
     this.floatingActionButtonArea,
   });
 
-  /// The distance from the [DialogScaffold]'s top edge to the top edge of the
-  /// rectangle in which the [DialogScaffold.bottomNavigationBar] bar is laid out.
+  /// The distance from the [TransparentScaffold]'s top edge to the top edge of the
+  /// rectangle in which the [TransparentScaffold.bottomNavigationBar] bar is laid out.
   ///
-  /// Null if [DialogScaffold.bottomNavigationBar] is null.
+  /// Null if [TransparentScaffold.bottomNavigationBar] is null.
   final double? bottomNavigationBarTop;
 
-  /// The [DialogScaffold.floatingActionButton]'s bounding rectangle.
+  /// The [TransparentScaffold.floatingActionButton]'s bounding rectangle.
   ///
   /// This is null when there is no floating action button showing.
   final Rect? floatingActionButtonArea;
@@ -1118,7 +1119,7 @@ class _ScaffoldLayout extends MultiChildLayoutDelegate {
 ///
 /// * Entrance/Exit animations, which this widget triggers
 ///   when the [FloatingActionButton] is added, updated, or removed.
-/// * Motion animations, which are triggered by the [DialogScaffold]
+/// * Motion animations, which are triggered by the [TransparentScaffold]
 ///   when its [FloatingActionButtonLocation] is updated.
 class _FloatingActionButtonTransition extends StatefulWidget {
   const _FloatingActionButtonTransition({
@@ -1335,13 +1336,13 @@ class _FloatingActionButtonTransitionState extends State<_FloatingActionButtonTr
 /// This class provides APIs for showing drawers and bottom sheets.
 ///
 /// To display a persistent bottom sheet, obtain the
-/// [DialogScaffoldState] for the current [BuildContext] via [DialogScaffold.of] and use the
-/// [DialogScaffoldState.showBottomSheet] function.
+/// [TransparentScaffoldState] for the current [BuildContext] via [TransparentScaffold.of] and use the
+/// [TransparentScaffoldState.showBottomSheet] function.
 ///
 /// {@tool dartpad}
-/// This example shows a [DialogScaffold] with a [body] and [FloatingActionButton].
+/// This example shows a [TransparentScaffold] with a [body] and [FloatingActionButton].
 /// The [body] is a [Text] placed in a [Center] in order to center the text
-/// within the [DialogScaffold]. The [FloatingActionButton] is connected to a
+/// within the [TransparentScaffold]. The [FloatingActionButton] is connected to a
 /// callback that increments a counter.
 ///
 /// ![The Scaffold has a white background with a blue AppBar at the top. A blue FloatingActionButton is positioned at the bottom right corner of the Scaffold.](https://flutter.github.io/assets-for-api-docs/assets/material/scaffold.png)
@@ -1350,9 +1351,9 @@ class _FloatingActionButtonTransitionState extends State<_FloatingActionButtonTr
 /// {@end-tool}
 ///
 /// {@tool dartpad}
-/// This example shows a [DialogScaffold] with a blueGrey [backgroundColor], [body]
+/// This example shows a [TransparentScaffold] with a blueGrey [backgroundColor], [body]
 /// and [FloatingActionButton]. The [body] is a [Text] placed in a [Center] in
-/// order to center the text within the [DialogScaffold]. The [FloatingActionButton]
+/// order to center the text within the [TransparentScaffold]. The [FloatingActionButton]
 /// is connected to a callback that increments a counter.
 ///
 /// ![](https://flutter.github.io/assets-for-api-docs/assets/material/scaffold_background_color.png)
@@ -1361,9 +1362,9 @@ class _FloatingActionButtonTransitionState extends State<_FloatingActionButtonTr
 /// {@end-tool}
 ///
 /// {@tool dartpad}
-/// This example shows a [DialogScaffold] with an [AppBar], a [BottomAppBar] and a
+/// This example shows a [TransparentScaffold] with an [AppBar], a [BottomAppBar] and a
 /// [FloatingActionButton]. The [body] is a [Text] placed in a [Center] in order
-/// to center the text within the [DialogScaffold]. The [FloatingActionButton] is
+/// to center the text within the [TransparentScaffold]. The [FloatingActionButton] is
 /// centered and docked within the [BottomAppBar] using
 /// [FloatingActionButtonLocation.centerDocked]. The [FloatingActionButton] is
 /// connected to a callback that increments a counter.
@@ -1445,7 +1446,7 @@ class _FloatingActionButtonTransitionState extends State<_FloatingActionButtonTr
 ///    property.
 ///  * [BottomSheet], which is an overlay typically shown near the bottom of the
 ///    app. A bottom sheet can either be persistent, in which case it is shown
-///    using the [DialogScaffoldState.showBottomSheet] method, or modal, in which case
+///    using the [TransparentScaffoldState.showBottomSheet] method, or modal, in which case
 ///    it is shown using the [showModalBottomSheet] function.
 ///  * [SnackBar], which is a lightweight message with an optional action which
 ///    briefly displays at the bottom of the screen. Use the
@@ -1453,12 +1454,12 @@ class _FloatingActionButtonTransitionState extends State<_FloatingActionButtonTr
 ///  * [MaterialBanner], which displays an important, succinct message, at the
 ///    top of the screen, below the app bar. Use the
 ///    [ScaffoldMessengerState.showMaterialBanner] method to show material banners.
-///  * [DialogScaffoldState], which is the state associated with this widget.
+///  * [TransparentScaffoldState], which is the state associated with this widget.
 ///  * <https://material.io/design/layout/responsive-layout-grid.html>
 ///  * Cookbook: [Add a Drawer to a screen](https://flutter.dev/docs/cookbook/design/drawer)
-class DialogScaffold extends StatefulWidget {
+class TransparentScaffold extends StatefulWidget {
   /// Creates a visual scaffold for Material Design widgets.
-  const DialogScaffold({
+  const TransparentScaffold({
     super.key,
     this.appBar,
     this.body,
@@ -1551,12 +1552,12 @@ class DialogScaffold extends StatefulWidget {
 
   /// Responsible for determining where the [floatingActionButton] should go.
   ///
-  /// If null, the [DialogScaffoldState] will use the default location, [FloatingActionButtonLocation.endFloat].
+  /// If null, the [TransparentScaffoldState] will use the default location, [FloatingActionButtonLocation.endFloat].
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   /// Animator to move the [floatingActionButton] to a new [floatingActionButtonLocation].
   ///
-  /// If null, the [DialogScaffoldState] will use the default animator, [FloatingActionButtonAnimator.scaling].
+  /// If null, the [TransparentScaffoldState] will use the default animator, [FloatingActionButtonAnimator.scaling].
   final FloatingActionButtonAnimator? floatingActionButtonAnimator;
 
   /// A set of buttons that are displayed at the bottom of the scaffold.
@@ -1581,22 +1582,22 @@ class DialogScaffold extends StatefulWidget {
   ///
   /// Typically a [Drawer].
   ///
-  /// To open the drawer, use the [DialogScaffoldState.openDrawer] function.
+  /// To open the drawer, use the [TransparentScaffoldState.openDrawer] function.
   ///
-  /// To close the drawer, use either [DialogScaffoldState.closeDrawer], [Navigator.pop]
+  /// To close the drawer, use either [TransparentScaffoldState.closeDrawer], [Navigator.pop]
   /// or press the escape key on the keyboard.
   ///
   /// {@tool dartpad}
   /// To disable the drawer edge swipe on mobile, set the
-  /// [DialogScaffold.drawerEnableOpenDragGesture] to false. Then, use
-  /// [DialogScaffoldState.openDrawer] to open the drawer and [Navigator.pop] to close
+  /// [TransparentScaffold.drawerEnableOpenDragGesture] to false. Then, use
+  /// [TransparentScaffoldState.openDrawer] to open the drawer and [Navigator.pop] to close
   /// it.
   ///
   /// ** See code in examples/api/lib/material/scaffold/scaffold.drawer.0.dart **
   /// {@end-tool}
   final Widget? drawer;
 
-  /// Optional callback that is called when the [DialogScaffold.drawer] is opened or closed.
+  /// Optional callback that is called when the [TransparentScaffold.drawer] is opened or closed.
   final DrawerCallback? onDrawerChanged;
 
   /// A panel displayed to the side of the [body], often hidden on mobile
@@ -1605,22 +1606,22 @@ class DialogScaffold extends StatefulWidget {
   ///
   /// Typically a [Drawer].
   ///
-  /// To open the drawer, use the [DialogScaffoldState.openEndDrawer] function.
+  /// To open the drawer, use the [TransparentScaffoldState.openEndDrawer] function.
   ///
-  /// To close the drawer, use either [DialogScaffoldState.closeEndDrawer], [Navigator.pop]
+  /// To close the drawer, use either [TransparentScaffoldState.closeEndDrawer], [Navigator.pop]
   /// or press the escape key on the keyboard.
   ///
   /// {@tool dartpad}
   /// To disable the drawer edge swipe, set the
-  /// [DialogScaffold.endDrawerEnableOpenDragGesture] to false. Then, use
-  /// [DialogScaffoldState.openEndDrawer] to open the drawer and [Navigator.pop] to
+  /// [TransparentScaffold.endDrawerEnableOpenDragGesture] to false. Then, use
+  /// [TransparentScaffoldState.openEndDrawer] to open the drawer and [Navigator.pop] to
   /// close it.
   ///
   /// ** See code in examples/api/lib/material/scaffold/scaffold.end_drawer.0.dart **
   /// {@end-tool}
   final Widget? endDrawer;
 
-  /// Optional callback that is called when the [DialogScaffold.endDrawer] is opened or closed.
+  /// Optional callback that is called when the [TransparentScaffold.endDrawer] is opened or closed.
   final DrawerCallback? onEndDrawerChanged;
 
   /// The color to use for the scrim that obscures primary content while a drawer is open.
@@ -1710,7 +1711,7 @@ class DialogScaffold extends StatefulWidget {
   /// `MediaQuery.paddingOf(context).left`.
   final double? drawerEdgeDragWidth;
 
-  /// Determines if the [DialogScaffold.drawer] can be opened with a drag
+  /// Determines if the [TransparentScaffold.drawer] can be opened with a drag
   /// gesture on mobile.
   ///
   /// On desktop platforms, the drawer is not draggable.
@@ -1718,7 +1719,7 @@ class DialogScaffold extends StatefulWidget {
   /// By default, the drag gesture is enabled on mobile.
   final bool drawerEnableOpenDragGesture;
 
-  /// Determines if the [DialogScaffold.endDrawer] can be opened with a
+  /// Determines if the [TransparentScaffold.endDrawer] can be opened with a
   /// gesture on mobile.
   ///
   /// On desktop platforms, the drawer is not draggable.
@@ -1726,7 +1727,7 @@ class DialogScaffold extends StatefulWidget {
   /// By default, the drag gesture is enabled on mobile.
   final bool endDrawerEnableOpenDragGesture;
 
-  /// Restoration ID to save and restore the state of the [DialogScaffold].
+  /// Restoration ID to save and restore the state of the [TransparentScaffold].
   ///
   /// If it is non-null, the scaffold will persist and restore whether the
   /// [drawer] and [endDrawer] was open or closed.
@@ -1740,7 +1741,7 @@ class DialogScaffold extends StatefulWidget {
   ///    Flutter.
   final String? restorationId;
 
-  /// Finds the [DialogScaffoldState] from the closest instance of this class that
+  /// Finds the [TransparentScaffoldState] from the closest instance of this class that
   /// encloses the given context.
   ///
   /// If no instance of this class encloses the given context, will cause an
@@ -1749,16 +1750,16 @@ class DialogScaffold extends StatefulWidget {
   /// This method can be expensive (it walks the element tree).
   ///
   /// {@tool dartpad}
-  /// Typical usage of the [DialogScaffold.of] function is to call it from within the
-  /// `build` method of a child of a [DialogScaffold].
+  /// Typical usage of the [TransparentScaffold.of] function is to call it from within the
+  /// `build` method of a child of a [TransparentScaffold].
   ///
   /// ** See code in examples/api/lib/material/scaffold/scaffold.of.0.dart **
   /// {@end-tool}
   ///
   /// {@tool dartpad}
-  /// When the [DialogScaffold] is actually created in the same `build` function, the
+  /// When the [TransparentScaffold] is actually created in the same `build` function, the
   /// `context` argument to the `build` function can't be used to find the
-  /// [DialogScaffold] (since it's "above" the widget being returned in the widget
+  /// [TransparentScaffold] (since it's "above" the widget being returned in the widget
   /// tree). In such cases, the following technique with a [Builder] can be used
   /// to provide a new scope with a [BuildContext] that is "under" the
   /// [Scaffold]:
@@ -1768,18 +1769,19 @@ class DialogScaffold extends StatefulWidget {
   ///
   /// A more efficient solution is to split your build function into several
   /// widgets. This introduces a new context from which you can obtain the
-  /// [DialogScaffold]. In this solution, you would have an outer widget that creates
-  /// the [DialogScaffold] populated by instances of your new inner widgets, and then
-  /// in these inner widgets you would use [DialogScaffold.of].
+  /// [TransparentScaffold]. In this solution, you would have an outer widget that creates
+  /// the [TransparentScaffold] populated by instances of your new inner widgets, and then
+  /// in these inner widgets you would use [TransparentScaffold.of].
   ///
   /// A less elegant but more expedient solution is assign a [GlobalKey] to the
-  /// [DialogScaffold], then use the `key.currentState` property to obtain the
-  /// [DialogScaffoldState] rather than using the [DialogScaffold.of] function.
+  /// [TransparentScaffold], then use the `key.currentState` property to obtain the
+  /// [TransparentScaffoldState] rather than using the [TransparentScaffold.of] function.
   ///
-  /// If there is no [DialogScaffold] in scope, then this will throw an exception.
-  /// To return null if there is no [DialogScaffold], use [maybeOf] instead.
-  static DialogScaffoldState of(BuildContext context) {
-    final DialogScaffoldState? result = context.findAncestorStateOfType<DialogScaffoldState>();
+  /// If there is no [TransparentScaffold] in scope, then this will throw an exception.
+  /// To return null if there is no [TransparentScaffold], use [maybeOf] instead.
+  static TransparentScaffoldState of(BuildContext context) {
+    final TransparentScaffoldState? result =
+        context.findAncestorStateOfType<TransparentScaffoldState>();
     if (result != null) {
       return result;
     }
@@ -1811,7 +1813,7 @@ class DialogScaffold extends StatefulWidget {
     ]);
   }
 
-  /// Finds the [DialogScaffoldState] from the closest instance of this class that
+  /// Finds the [TransparentScaffoldState] from the closest instance of this class that
   /// encloses the given context.
   ///
   /// If no instance of this class encloses the given context, will return null.
@@ -1824,12 +1826,12 @@ class DialogScaffold extends StatefulWidget {
   ///  * [of], a similar function to this one that throws if no instance
   ///    encloses the given context. Also includes some sample code in its
   ///    documentation.
-  static DialogScaffoldState? maybeOf(BuildContext context) {
-    return context.findAncestorStateOfType<DialogScaffoldState>();
+  static TransparentScaffoldState? maybeOf(BuildContext context) {
+    return context.findAncestorStateOfType<TransparentScaffoldState>();
   }
 
   /// Returns a [ValueListenable] for the [ScaffoldGeometry] for the closest
-  /// [DialogScaffold] ancestor of the given context.
+  /// [TransparentScaffold] ancestor of the given context.
   ///
   /// The [ValueListenable.value] is only available at paint time.
   ///
@@ -1838,13 +1840,13 @@ class DialogScaffold extends StatefulWidget {
   /// layout passes are going to happen between the notification and the next
   /// paint pass.
   ///
-  /// The closest [DialogScaffold] ancestor for the context might change, e.g when
+  /// The closest [TransparentScaffold] ancestor for the context might change, e.g when
   /// an element is moved from one scaffold to another. For [StatefulWidget]s
-  /// using this listenable, a change of the [DialogScaffold] ancestor will
+  /// using this listenable, a change of the [TransparentScaffold] ancestor will
   /// trigger a [State.didChangeDependencies].
   ///
   /// A typical pattern for listening to the scaffold geometry would be to
-  /// call [DialogScaffold.geometryOf] in [State.didChangeDependencies], compare the
+  /// call [TransparentScaffold.geometryOf] in [State.didChangeDependencies], compare the
   /// return value with the previous listenable, if it has changed, unregister
   /// the listener, and register a listener to the new [ScaffoldGeometry]
   /// listenable.
@@ -1884,34 +1886,35 @@ class DialogScaffold extends StatefulWidget {
   /// If this is being used during a build (for example to decide whether to
   /// show an "open drawer" button), set the `registerForUpdates` argument to
   /// true. This will then set up an [InheritedWidget] relationship with the
-  /// [DialogScaffold] so that the client widget gets rebuilt whenever the [hasDrawer]
+  /// [TransparentScaffold] so that the client widget gets rebuilt whenever the [hasDrawer]
   /// value changes.
   ///
   /// This method can be expensive (it walks the element tree).
   ///
   /// See also:
   ///
-  ///  * [DialogScaffold.of], which provides access to the [DialogScaffoldState] object as a
+  ///  * [TransparentScaffold.of], which provides access to the [TransparentScaffoldState] object as a
   ///    whole, from which you can show bottom sheets, and so forth.
   static bool hasDrawer(BuildContext context, {bool registerForUpdates = true}) {
     if (registerForUpdates) {
       final _ScaffoldScope? scaffold = context.dependOnInheritedWidgetOfExactType<_ScaffoldScope>();
       return scaffold?.hasDrawer ?? false;
     } else {
-      final DialogScaffoldState? scaffold = context.findAncestorStateOfType<DialogScaffoldState>();
+      final TransparentScaffoldState? scaffold =
+          context.findAncestorStateOfType<TransparentScaffoldState>();
       return scaffold?.hasDrawer ?? false;
     }
   }
 
   @override
-  DialogScaffoldState createState() => DialogScaffoldState();
+  TransparentScaffoldState createState() => TransparentScaffoldState();
 }
 
-/// State for a [DialogScaffold].
+/// State for a [TransparentScaffold].
 ///
-/// Can display [BottomSheet]s. Retrieve a [DialogScaffoldState] from the current
-/// [BuildContext] using [DialogScaffold.of].
-class DialogScaffoldState extends State<DialogScaffold>
+/// Can display [BottomSheet]s. Retrieve a [TransparentScaffoldState] from the current
+/// [BuildContext] using [TransparentScaffold.of].
+class TransparentScaffoldState extends State<TransparentScaffold>
     with TickerProviderStateMixin, RestorationMixin {
   @override
   String? get restorationId => widget.restorationId;
@@ -1929,41 +1932,41 @@ class DialogScaffoldState extends State<DialogScaffold>
 
   final GlobalKey _bodyKey = GlobalKey();
 
-  /// Whether this scaffold has a non-null [DialogScaffold.appBar].
+  /// Whether this scaffold has a non-null [TransparentScaffold.appBar].
   bool get hasAppBar => widget.appBar != null;
 
-  /// Whether this scaffold has a non-null [DialogScaffold.drawer].
+  /// Whether this scaffold has a non-null [TransparentScaffold.drawer].
   bool get hasDrawer => widget.drawer != null;
 
-  /// Whether this scaffold has a non-null [DialogScaffold.endDrawer].
+  /// Whether this scaffold has a non-null [TransparentScaffold.endDrawer].
   bool get hasEndDrawer => widget.endDrawer != null;
 
-  /// Whether this scaffold has a non-null [DialogScaffold.floatingActionButton].
+  /// Whether this scaffold has a non-null [TransparentScaffold.floatingActionButton].
   bool get hasFloatingActionButton => widget.floatingActionButton != null;
 
   double? _appBarMaxHeight;
 
-  /// The max height the [DialogScaffold.appBar] uses.
+  /// The max height the [TransparentScaffold.appBar] uses.
   ///
   /// This is based on the appBar preferred height plus the top padding.
   double? get appBarMaxHeight => _appBarMaxHeight;
   final RestorableBool _drawerOpened = RestorableBool(false);
   final RestorableBool _endDrawerOpened = RestorableBool(false);
 
-  /// Whether the [DialogScaffold.drawer] is opened.
+  /// Whether the [TransparentScaffold.drawer] is opened.
   ///
   /// See also:
   ///
-  ///  * [DialogScaffoldState.openDrawer], which opens the [DialogScaffold.drawer] of a
-  ///    [DialogScaffold].
+  ///  * [TransparentScaffoldState.openDrawer], which opens the [TransparentScaffold.drawer] of a
+  ///    [TransparentScaffold].
   bool get isDrawerOpen => _drawerOpened.value;
 
-  /// Whether the [DialogScaffold.endDrawer] is opened.
+  /// Whether the [TransparentScaffold.endDrawer] is opened.
   ///
   /// See also:
   ///
-  ///  * [DialogScaffoldState.openEndDrawer], which opens the [DialogScaffold.endDrawer] of
-  ///    a [DialogScaffold].
+  ///  * [TransparentScaffoldState.openEndDrawer], which opens the [TransparentScaffold.endDrawer] of
+  ///    a [TransparentScaffold].
   bool get isEndDrawerOpen => _endDrawerOpened.value;
 
   void _drawerOpenedCallback(bool isOpened) {
@@ -1986,17 +1989,17 @@ class DialogScaffoldState extends State<DialogScaffold>
 
   /// Opens the [Drawer] (if any).
   ///
-  /// If the scaffold has a non-null [DialogScaffold.drawer], this function will cause
+  /// If the scaffold has a non-null [TransparentScaffold.drawer], this function will cause
   /// the drawer to begin its entrance animation.
   ///
-  /// Normally this is not needed since the [DialogScaffold] automatically shows an
+  /// Normally this is not needed since the [TransparentScaffold] automatically shows an
   /// appropriate [IconButton], and handles the edge-swipe gesture, to show the
   /// drawer.
   ///
-  /// To close the drawer, use either [DialogScaffoldState.closeEndDrawer] or
+  /// To close the drawer, use either [TransparentScaffoldState.closeEndDrawer] or
   /// [Navigator.pop].
   ///
-  /// See [DialogScaffold.of] for information about how to obtain the [DialogScaffoldState].
+  /// See [TransparentScaffold.of] for information about how to obtain the [TransparentScaffoldState].
   void openDrawer() {
     if (_endDrawerKey.currentState != null && _endDrawerOpened.value) {
       _endDrawerKey.currentState!.close();
@@ -2006,17 +2009,17 @@ class DialogScaffoldState extends State<DialogScaffold>
 
   /// Opens the end side [Drawer] (if any).
   ///
-  /// If the scaffold has a non-null [DialogScaffold.endDrawer], this function will cause
+  /// If the scaffold has a non-null [TransparentScaffold.endDrawer], this function will cause
   /// the end side drawer to begin its entrance animation.
   ///
-  /// Normally this is not needed since the [DialogScaffold] automatically shows an
+  /// Normally this is not needed since the [TransparentScaffold] automatically shows an
   /// appropriate [IconButton], and handles the edge-swipe gesture, to show the
   /// drawer.
   ///
-  /// To close the drawer, use either [DialogScaffoldState.closeEndDrawer] or
+  /// To close the drawer, use either [TransparentScaffoldState.closeEndDrawer] or
   /// [Navigator.pop].
   ///
-  /// See [DialogScaffold.of] for information about how to obtain the [DialogScaffoldState].
+  /// See [TransparentScaffold.of] for information about how to obtain the [TransparentScaffoldState].
   void openEndDrawer() {
     if (_drawerKey.currentState != null && _drawerOpened.value) {
       _drawerKey.currentState!.close();
@@ -2142,18 +2145,18 @@ class DialogScaffoldState extends State<DialogScaffold>
     }
   }
 
-  /// Closes [DialogScaffold.drawer] if it is currently opened.
+  /// Closes [TransparentScaffold.drawer] if it is currently opened.
   ///
-  /// See [DialogScaffold.of] for information about how to obtain the [DialogScaffoldState].
+  /// See [TransparentScaffold.of] for information about how to obtain the [TransparentScaffoldState].
   void closeDrawer() {
     if (hasDrawer && isDrawerOpen) {
       _drawerKey.currentState!.close();
     }
   }
 
-  /// Closes [DialogScaffold.endDrawer] if it is currently opened.
+  /// Closes [TransparentScaffold.endDrawer] if it is currently opened.
   ///
-  /// See [DialogScaffold.of] for information about how to obtain the [DialogScaffoldState].
+  /// See [TransparentScaffold.of] for information about how to obtain the [TransparentScaffoldState].
   void closeEndDrawer() {
     if (hasEndDrawer && isEndDrawerOpen) {
       _endDrawerKey.currentState!.close();
@@ -2292,8 +2295,8 @@ class DialogScaffoldState extends State<DialogScaffold>
     );
   }
 
-  /// Shows a Material Design bottom sheet in the nearest [DialogScaffold]. To show
-  /// a persistent bottom sheet, use the [DialogScaffold.bottomSheet].
+  /// Shows a Material Design bottom sheet in the nearest [TransparentScaffold]. To show
+  /// a persistent bottom sheet, use the [TransparentScaffold.bottomSheet].
   ///
   /// Returns a controller that can be used to close and otherwise manipulate the
   /// bottom sheet.
@@ -2303,7 +2306,7 @@ class DialogScaffoldState extends State<DialogScaffold>
   /// this method.
   ///
   /// The new bottom sheet becomes a [LocalHistoryEntry] for the enclosing
-  /// [ModalRoute] and a back button is added to the app bar of the [DialogScaffold]
+  /// [ModalRoute] and a back button is added to the app bar of the [TransparentScaffold]
   /// that closes the bottom sheet.
   ///
   /// The [transitionAnimationController] controls the bottom sheet's entrance and
@@ -2312,7 +2315,7 @@ class DialogScaffoldState extends State<DialogScaffold>
   ///
   /// To create a persistent bottom sheet that is not a [LocalHistoryEntry] and
   /// does not add a back button to the enclosing Scaffold's app bar, use the
-  /// [DialogScaffold.bottomSheet] constructor parameter.
+  /// [TransparentScaffold.bottomSheet] constructor parameter.
   ///
   /// A persistent bottom sheet shows information that supplements the primary
   /// content of the app. A persistent bottom sheet remains visible even when
@@ -2337,7 +2340,7 @@ class DialogScaffoldState extends State<DialogScaffold>
   ///  * [showBottomSheet], which calls this method given a [BuildContext].
   ///  * [showModalBottomSheet], which can be used to display a modal bottom
   ///    sheet.
-  ///  * [DialogScaffold.of], for information about how to obtain the [DialogScaffoldState].
+  ///  * [TransparentScaffold.of], for information about how to obtain the [TransparentScaffoldState].
   ///  * The Material 2 spec at <https://m2.material.io/components/sheets-bottom>.
   ///  * The Material 3 spec at <https://m3.material.io/components/bottom-sheets/overview>.
   PersistentBottomSheetController<T> showBottomSheet<T>(
@@ -2391,12 +2394,12 @@ class DialogScaffoldState extends State<DialogScaffold>
   late AnimationController _floatingActionButtonVisibilityController;
 
   /// Gets the current value of the visibility animation for the
-  /// [DialogScaffold.floatingActionButton].
+  /// [TransparentScaffold.floatingActionButton].
   double get _floatingActionButtonVisibilityValue =>
       _floatingActionButtonVisibilityController.value;
 
   /// Sets the current value of the visibility animation for the
-  /// [DialogScaffold.floatingActionButton]. This value must not be null.
+  /// [TransparentScaffold.floatingActionButton]. This value must not be null.
   set _floatingActionButtonVisibilityValue(double newValue) {
     _floatingActionButtonVisibilityController.value = clampDouble(
       newValue,
@@ -2405,7 +2408,7 @@ class DialogScaffoldState extends State<DialogScaffold>
     );
   }
 
-  /// Shows the [DialogScaffold.floatingActionButton].
+  /// Shows the [TransparentScaffold.floatingActionButton].
   TickerFuture _showFloatingActionButton() {
     return _floatingActionButtonVisibilityController.forward();
   }
@@ -2482,7 +2485,7 @@ class DialogScaffoldState extends State<DialogScaffold>
   }
 
   @override
-  void didUpdateWidget(DialogScaffold oldWidget) {
+  void didUpdateWidget(TransparentScaffold oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update the Floating Action Button Animator, and then schedule the Floating Action Button for repositioning.
     if (widget.floatingActionButtonAnimator != oldWidget.floatingActionButtonAnimator) {
@@ -2936,20 +2939,21 @@ class _DismissDrawerAction extends DismissAction {
 
   @override
   bool isEnabled(DismissIntent intent) {
-    return DialogScaffold.of(context).isDrawerOpen || DialogScaffold.of(context).isEndDrawerOpen;
+    return TransparentScaffold.of(context).isDrawerOpen ||
+        TransparentScaffold.of(context).isEndDrawerOpen;
   }
 
   @override
   void invoke(DismissIntent intent) {
-    DialogScaffold.of(context).closeDrawer();
-    DialogScaffold.of(context).closeEndDrawer();
+    TransparentScaffold.of(context).closeDrawer();
+    TransparentScaffold.of(context).closeEndDrawer();
   }
 }
 
-/// An interface for controlling a feature of a [DialogScaffold].
+/// An interface for controlling a feature of a [TransparentScaffold].
 ///
 /// Commonly obtained from [ScaffoldMessengerState.showSnackBar] or
-/// [DialogScaffoldState.showBottomSheet].
+/// [TransparentScaffoldState.showBottomSheet].
 class ScaffoldFeatureController<T extends Widget, U> {
   const ScaffoldFeatureController._(this._widget, this._completer, this.close, this.setState);
 
@@ -3109,7 +3113,7 @@ class _StandardBottomSheetState extends State<_StandardBottomSheet> {
 
   bool extentChanged(DraggableScrollableNotification notification) {
     final double extentRemaining = 1.0 - notification.extent;
-    final DialogScaffoldState scaffold = DialogScaffold.of(context);
+    final TransparentScaffoldState scaffold = TransparentScaffold.of(context);
     if (extentRemaining < _kBottomSheetDominatesPercentage) {
       scaffold._floatingActionButtonVisibilityValue =
           extentRemaining * _kBottomSheetDominatesPercentage * 10;
@@ -3167,11 +3171,11 @@ class _StandardBottomSheetState extends State<_StandardBottomSheet> {
 
 /// A [ScaffoldFeatureController] for standard bottom sheets.
 ///
-/// This is the type of objects returned by [DialogScaffoldState.showBottomSheet].
+/// This is the type of objects returned by [TransparentScaffoldState.showBottomSheet].
 ///
 /// This controller is used to display both standard and persistent bottom
 /// sheets. A bottom sheet is only persistent if it is set as the
-/// [DialogScaffold.bottomSheet].
+/// [TransparentScaffold.bottomSheet].
 class PersistentBottomSheetController<T>
     extends ScaffoldFeatureController<_StandardBottomSheet, T> {
   const PersistentBottomSheetController._(

@@ -18,7 +18,7 @@ class TodoStatusWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tap(
         onTap: () {
-          TodoDataHolder.of(context).changeTodoStatus(todo);
+          context.todoDataHolder.changeTodoStatus(todo);
         },
         child: SizedBox(
           height: 50,
