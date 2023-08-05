@@ -1,7 +1,11 @@
 import 'package:fast_app_base/data/memory/todo_status.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../local/collection/todo_db_model.dart';
 
+part 'vo_todo.g.dart';
+
+@JsonSerializable()
 class Todo {
   Todo({
     required this.id,
@@ -20,6 +24,8 @@ class Todo {
   DateTime dueDate;
   TodoStatus status;
 
+  factory Todo.fromJson(Map<String, Object?> json) => _$TodoFromJson(json);
+
   factory Todo.fromDB(TodoDbModel e) {
     return Todo(
         id: e.id,
@@ -31,4 +37,6 @@ class Todo {
   }
 
   TodoDbModel get dbModel => TodoDbModel(id, createdTime, modifyTime, title, dueDate, status);
+
+  Map<String, dynamic> toJson() => _$TodoToJson(this);
 }

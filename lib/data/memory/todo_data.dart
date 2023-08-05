@@ -1,5 +1,6 @@
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
+import 'package:fast_app_base/data/todo_repository.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
 import 'package:fast_app_base/screen/main/write/d_write_todo.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,15 @@ import '../local/local_db.dart';
 
 class TodoData extends GetxController {
   final RxList<Todo> todoList = <Todo>[].obs;
+  //final TodoRepository todoRepository = TodoApi.instance;
+  final TodoRepository todoRepository = LocalDB.instance;
+  //final todoRepository = LocalDB.instance;
 
   @override
   void onInit() async {
-    final savedList = await LocalDB.getTodoList();
-    savedList.runIfSuccess((data) {
-      todoList.addAll(data.map((e) => Todo.fromDB(e)));
+    final remoteTodoList = await todoRepository.getTodoList();
+    remoteTodoList.runIfSuccess((data) {
+      todoList.addAll(data);
     });
     super.onInit();
   }
@@ -32,7 +36,7 @@ class TodoData extends GetxController {
         dueDate: data.dueDate,
       );
       todoList.add(newTodo);
-      LocalDB.addTodo(newTodo.dbModel);
+      todoRepository.addTodo(newTodo);
     });
   }
 
@@ -48,8 +52,7 @@ class TodoData extends GetxController {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    LocalDB.updateTodo(todo.dbModel);
-    notify(todo);
+    updateTodo(todo);
   }
 
   editTodo(Todo todo) async {
@@ -59,7 +62,11 @@ class TodoData extends GetxController {
       todo.title = data.title;
       todo.dueDate = data.dueDate;
     });
-    LocalDB.updateTodo(todo.dbModel);
+    updateTodo(todo);
+  }
+
+  void updateTodo(Todo todo) {
+    todoRepository.updateTodo(todo);
     notify(todo);
   }
 
@@ -70,7 +77,8 @@ class TodoData extends GetxController {
 
   void removeTodo(Todo todo) {
     todoList.remove(todo);
-    LocalDB.removeTodo(todo.id);
+    todoRepository.removeTodo(todo.id);
+    //LocalDB.removeTodo(todo.id);
   }
 }
 
