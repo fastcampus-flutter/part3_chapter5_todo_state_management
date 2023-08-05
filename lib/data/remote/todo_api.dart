@@ -9,7 +9,6 @@ import '../todo_repository.dart';
 
 ///Remote DB
 class TodoApi implements TodoRepository<ApiError> {
-  static String todoUri = 'http://localhost:8080/todo';
   final client = TodoClient(Dio());
 
   TodoApi._();
@@ -54,7 +53,7 @@ class TodoApi implements TodoRepository<ApiError> {
       return await apiLogic();
     } on DioException catch (e) {
       return SimpleResult.failure(ApiError(
-          message: e.message ?? 'error message is not exist',
+          message: e.message ?? e.error?.toString() ?? 'error message is not exist',
           statusCode: e.response?.statusCode ?? 0));
     } catch (e) {
       return SimpleResult.failure(ApiError(message: 'unknown error ${e.toString()}'));

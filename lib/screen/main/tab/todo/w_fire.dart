@@ -14,16 +14,6 @@ class _FireState extends State<Fire> {
   late SMIBool smiOn;
   late SMIBool smiHover;
 
-  // @override
-  // void didUpdateWidget(covariant Fire oldWidget) {
-  //   if (oldWidget.isLike != widget.isLike) {
-  //     smiOn.value = widget.isLike;
-  //     smiHover.value = widget.isLike;
-  //   }
-  //
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return RiveAnimation.asset(

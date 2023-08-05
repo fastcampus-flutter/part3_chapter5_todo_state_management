@@ -1,26 +1,32 @@
+import 'package:fast_app_base/common/cli_common.dart';
+import 'package:fast_app_base/common/util/async/flutter_async.dart';
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
-import 'package:fast_app_base/data/todo_repository.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
+import 'package:fast_app_base/screen/dialog/d_message.dart';
 import 'package:fast_app_base/screen/main/write/d_write_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../local/local_db.dart';
+import '../remote/todo_api.dart';
 
 class TodoData extends GetxController {
   final RxList<Todo> todoList = <Todo>[].obs;
 
-  //final TodoRepository todoRepository = TodoApi.instance;
-  final TodoRepository todoRepository = LocalDB.instance;
+  final todoRepository = TodoApi.instance;
 
-  //final todoRepository = LocalDB.instance;
+  //final TodoRepository todoRepository = LocalDB.instance;
 
   @override
   void onInit() async {
     final remoteTodoList = await todoRepository.getTodoList();
     remoteTodoList.runIfSuccess((data) {
       todoList.addAll(data);
+    });
+    remoteTodoList.runIfFailure((error) {
+      delay(() {
+        MessageDialog(error.message).show();
+      }, 100.ms);
     });
     super.onInit();
   }
@@ -73,12 +79,7 @@ class TodoData extends GetxController {
 
   void updateTodo(Todo todo) {
     todoRepository.updateTodo(todo);
-    notify(todo);
-  }
-
-  void notify(Todo todo) {
-    final index = todoList.indexOf(todo);
-    todoList[index] = todo;
+    todoList.refresh();
   }
 
   void removeTodo(Todo todo) {
