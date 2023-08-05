@@ -13,12 +13,15 @@ import '../../../common/widget/dialog_scaffold.dart';
 import '../../../data/memory/vo_todo.dart';
 
 class WriteTodoBottomSheet extends DialogWidget<SimpleResult> {
+  final Todo? todoForEdit;
+
   WriteTodoBottomSheet({
     super.context,
     super.key,
     super.barrierColor = const Color(0x80000000),
     super.animation = NavAni.Bottom,
     super.useRootNavigator = false,
+    this.todoForEdit,
   });
 
   @override
@@ -28,7 +31,19 @@ class WriteTodoBottomSheet extends DialogWidget<SimpleResult> {
 class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with AfterLayoutMixin {
   final todoTextEditingController = TextEditingController();
   final node = FocusNode();
-  DateTime? _selectedDate;
+  late DateTime _selectedDate;
+
+  @override
+  void initState() {
+    final todoForEdit = widget.todoForEdit;
+    if (todoForEdit != null) {
+      _selectedDate = todoForEdit.dueDate;
+      todoTextEditingController.text = todoForEdit.title;
+    } else {
+      _selectedDate = DateTime.now();
+    }
+    super.initState();
+  }
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) {
@@ -107,7 +122,7 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
 
   void done(BuildContext context) {
     TodoDataHolder.of(context)
-        .addTodo(Todo(title: todoTextEditingController.text)..dueDate = _selectedDate);
+        .addTodo(Todo(title: todoTextEditingController.text, dueDate: _selectedDate));
     widget.hide();
   }
 }
