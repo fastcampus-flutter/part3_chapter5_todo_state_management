@@ -78,13 +78,13 @@ class _MessageDialogState extends DialogState<ConfirmDialog> {
                         Expanded(
                           child: Tap(
                             onTap: () {
-                              widget.hide(SimpleResult.success());
+                              widget.hide(SimpleResult.failure());
                             },
                             child: Container(
                                 height: 50,
                                 alignment: Alignment.center,
                                 child: Text(
-                                  widget.buttonText,
+                                  widget.cancelButtonText,
                                   style: TextStyle(
                                     color: context.appColors.confirmText,
                                     fontSize: 16,
@@ -97,13 +97,13 @@ class _MessageDialogState extends DialogState<ConfirmDialog> {
                         Expanded(
                           child: Tap(
                             onTap: () {
-                              widget.hide(SimpleResult.failure());
+                              widget.hide(SimpleResult.success());
                             },
                             child: Container(
                                 height: 50,
                                 alignment: Alignment.center,
                                 child: Text(
-                                  widget.cancelButtonText,
+                                  widget.buttonText,
                                   style: TextStyle(
                                     color: context.appColors.confirmText,
                                     fontSize: 16,

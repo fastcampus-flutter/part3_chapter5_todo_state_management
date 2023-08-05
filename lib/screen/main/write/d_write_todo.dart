@@ -89,7 +89,7 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
                 ),
               ),
               RoundButton(
-                  text: '추가',
+                  text: isEditMode ? '수정' : '추가',
                   onTap: () {
                     done(context);
                   })
@@ -99,6 +99,8 @@ class _WriteTodoBottomSheetState extends DialogState<WriteTodoBottomSheet> with 
       ),
     );
   }
+
+  bool get isEditMode => widget.todoForEdit != null;
 
   void onTapChangedDate() async {
     final selectedDate = await showDatePicker(
