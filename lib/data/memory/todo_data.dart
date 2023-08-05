@@ -1,4 +1,3 @@
-import 'package:fast_app_base/data/memory/todo_data_change_notifier.dart';
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
@@ -7,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TodoData extends GetxController {
-  final TodoDataChangeNotifier todoDataChangeNotifier = TodoDataChangeNotifier();
+  final RxList<Todo> todoList = <Todo>[].obs;
 
   int get newId {
     return DateTime.now().millisecondsSinceEpoch;
@@ -21,7 +20,7 @@ class TodoData extends GetxController {
         title: data.title,
         dueDate: data.dueDate,
       );
-      todoDataChangeNotifier.addTodo(newTodo);
+      todoList.add(newTodo);
     });
   }
 
@@ -37,7 +36,7 @@ class TodoData extends GetxController {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    todoDataChangeNotifier.notify();
+    notify(todo);
   }
 
   editTodo(Todo todo) async {
@@ -46,12 +45,17 @@ class TodoData extends GetxController {
       todo.modifyTime = DateTime.now();
       todo.title = data.title;
       todo.dueDate = data.dueDate;
-      todoDataChangeNotifier.notify();
     });
+    notify(todo);
+  }
+
+  void notify(Todo todo) {
+    final index = todoList.indexOf(todo);
+    todoList[index] = todo;
   }
 
   void removeTodo(Todo todo) {
-    todoDataChangeNotifier.remove(todo);
+    todoList.remove(todo);
   }
 }
 
