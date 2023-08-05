@@ -52,7 +52,7 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
         floatingActionButton: _currentIndex == 0
             ? FloatingActionButton(
                 onPressed: () async {
-                  context.todoDataHolder.addTodo();
+                  context.todoDataHolder.addTodo(context);
                 },
                 child: const Icon(EvaIcons.plus),
               )

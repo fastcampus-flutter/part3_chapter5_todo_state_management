@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class TodoDataHolder extends InheritedWidget {
   final TodoDataChangeNotifier todoDataChangeNotifier;
+  //static BuildContext? _tempContext;
 
   const TodoDataHolder({
     required this.todoDataChangeNotifier,
@@ -14,19 +15,41 @@ class TodoDataHolder extends InheritedWidget {
     Key? key,
   }) : super(key: key, child: child);
 
+  int get newId {
+    return DateTime.now().millisecondsSinceEpoch;
+  }
+
   @override
   bool updateShouldNotify(TodoDataHolder oldWidget) {
     return false;
   }
 
-  void addTodo() async {
+  void addTodo(BuildContext context) async {
     final result = await WriteTodoBottomSheet().show();
     result?.runIfSuccess((data) {
-      todoDataChangeNotifier.addTodo(data);
+      final newTodo = Todo(
+        id: context.todoDataHolder.newId,
+        title: data.title,
+        dueDate: data.dueDate,
+      );
+      todoDataChangeNotifier.addTodo(newTodo);
     });
   }
 
+  // void addTodoWithoutContext() async {
+  //   final result = await WriteTodoBottomSheet().show();
+  //   result?.runIfSuccess((data) {
+  //     final newTodo = Todo(
+  //       id: TodoDataHolder._tempContext!.todoDataHolder.newId,
+  //       title: data.title,
+  //       dueDate: data.dueDate,
+  //     );
+  //     todoDataChangeNotifier.addTodo(newTodo);
+  //   });
+  // }
+
   static TodoDataHolder _of(BuildContext context) {
+    //TodoDataHolder._tempContext = context;
     TodoDataHolder inherited = (context.dependOnInheritedWidgetOfExactType<TodoDataHolder>())!;
     return inherited;
   }
@@ -37,12 +60,9 @@ class TodoDataHolder extends InheritedWidget {
         final result = await ConfirmDialog('다시 처음 상태로 변경하시겠어요?').show();
         result?.runIfSuccess((data) {
           todo.status = TodoStatus.incomplete;
-          //todoDataChangeNotifier.notifyListeners();
         });
-        break;
       case TodoStatus.incomplete:
         todo.status = TodoStatus.ongoing;
-      //todoDataChangeNotifier.notifyListeners();
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
@@ -57,6 +77,10 @@ class TodoDataHolder extends InheritedWidget {
       todo.dueDate = data.dueDate;
       todoDataChangeNotifier.notify();
     });
+  }
+
+  void removeTodo(Todo todo) {
+    todoDataChangeNotifier.remove(todo);
   }
 }
 

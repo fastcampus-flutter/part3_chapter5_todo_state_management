@@ -49,4 +49,6 @@ abstract class AbstractThemeColors {
   Color get blueButtonBackground => AppColors.darkBlue;
 
   Color get itemBackground => Colors.white;
+
+  Color get removeTodoBg => const Color.fromARGB(255, 255, 125, 125);
 }
