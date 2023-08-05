@@ -170,7 +170,7 @@ class _$_Todo extends _Todo {
       this.modifyTime,
       required this.title,
       required this.dueDate,
-      this.status = TodoStatus.incomplete})
+      this.status = TodoStatus.unknown})
       : super._();
 
   factory _$_Todo.fromJson(Map<String, dynamic> json) => _$$_TodoFromJson(json);

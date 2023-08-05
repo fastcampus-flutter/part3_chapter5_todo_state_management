@@ -166,11 +166,13 @@ const _TodoDbModelstatusEnumValueMap = {
   'incomplete': 0,
   'ongoing': 1,
   'complete': 2,
+  'unknown': 3,
 };
 const _TodoDbModelstatusValueEnumMap = {
   0: TodoStatus.incomplete,
   1: TodoStatus.ongoing,
   2: TodoStatus.complete,
+  3: TodoStatus.unknown,
 };
 
 Id _todoDbModelGetId(TodoDbModel object) {

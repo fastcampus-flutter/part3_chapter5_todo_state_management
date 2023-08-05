@@ -16,7 +16,7 @@ class ApiError {
   });
 
   static createErrorResult(e) {
-    if (e is DioError) {
+    if (e is DioException) {
       if (!kReleaseMode) {
         return SimpleResult.failure(ApiError(
             message: e.error?.toString() ?? e.message ?? 'message is empty',

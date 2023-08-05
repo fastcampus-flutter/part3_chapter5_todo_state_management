@@ -10,8 +10,10 @@ import '../local/local_db.dart';
 
 class TodoData extends GetxController {
   final RxList<Todo> todoList = <Todo>[].obs;
+
   //final TodoRepository todoRepository = TodoApi.instance;
   final TodoRepository todoRepository = LocalDB.instance;
+
   //final todoRepository = LocalDB.instance;
 
   @override
@@ -35,6 +37,7 @@ class TodoData extends GetxController {
         title: data.title,
         dueDate: data.dueDate,
         createdTime: DateTime.now(),
+        status: TodoStatus.incomplete,
       );
       todoList.add(newTodo);
       todoRepository.addTodo(newTodo);
@@ -52,6 +55,8 @@ class TodoData extends GetxController {
         todo.status = TodoStatus.ongoing;
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
+      case TodoStatus.unknown:
+        return;
     }
     updateTodo(todo);
   }

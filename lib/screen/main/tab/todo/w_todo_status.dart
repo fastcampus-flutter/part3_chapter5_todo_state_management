@@ -34,6 +34,10 @@ class TodoStatusWidget extends StatelessWidget with TodoDataProvider {
                 onChanged: null,
               ),
             TodoStatus.ongoing => const Fire(),
+            TodoStatus.unknown => const Icon(
+                Icons.question_mark,
+                size: 25,
+              ).centered(),
           },
         ));
   }

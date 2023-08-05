@@ -15,7 +15,7 @@ class Todo with _$Todo {
     DateTime? modifyTime,
     required String title,
     required DateTime dueDate,
-    @Default(TodoStatus.incomplete) TodoStatus status,
+    @Default(TodoStatus.unknown) TodoStatus status,
   }) = _Todo;
 
   factory Todo.fromJson(Map<String, Object?> json) => _$TodoFromJson(json);

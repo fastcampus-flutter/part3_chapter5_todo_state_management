@@ -15,7 +15,7 @@ _$_Todo _$$_TodoFromJson(Map<String, dynamic> json) => _$_Todo(
       title: json['title'] as String,
       dueDate: DateTime.parse(json['dueDate'] as String),
       status: $enumDecodeNullable(_$TodoStatusEnumMap, json['status']) ??
-          TodoStatus.incomplete,
+          TodoStatus.unknown,
     );
 
 Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) => <String, dynamic>{
@@ -31,4 +31,5 @@ const _$TodoStatusEnumMap = {
   TodoStatus.incomplete: 'incomplete',
   TodoStatus.ongoing: 'ongoing',
   TodoStatus.complete: 'complete',
+  TodoStatus.unknown: 'unknown',
 };
