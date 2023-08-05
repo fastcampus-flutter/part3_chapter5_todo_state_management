@@ -36,7 +36,7 @@ class TodoData extends GetxController {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    notify(todo);
+    todoList.refresh();
   }
 
   editTodo(Todo todo) async {
@@ -46,12 +46,7 @@ class TodoData extends GetxController {
       todo.title = data.title;
       todo.dueDate = data.dueDate;
     });
-    notify(todo);
-  }
-
-  void notify(Todo todo) {
-    final index = todoList.indexOf(todo);
-    todoList[index] = todo;
+    todoList.refresh();
   }
 
   void removeTodo(Todo todo) {
