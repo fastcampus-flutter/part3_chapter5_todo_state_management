@@ -1,8 +1,13 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
 import 'package:fast_app_base/screen/main/tab/tab_item.dart';
 import 'package:fast_app_base/screen/main/tab/tab_navigator.dart';
+import 'package:fast_app_base/screen/main/write/d_write_todo.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/common.dart';
+import '../../data/memory/todo_data_holder.dart';
+import '../../data/memory/vo_todo.dart';
 import 'w_menu_drawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,8 +18,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
-  TabItem _currentTab = TabItem.home;
-  final tabs = [TabItem.home, TabItem.favorite];
+  TabItem _currentTab = TabItem.todo;
+  final tabs = [TabItem.todo, TabItem.search];
   final List<GlobalKey<NavigatorState>> navigatorKeys = [];
 
   int get _currentIndex => tabs.indexOf(_currentTab);
@@ -36,7 +41,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
     return WillPopScope(
       onWillPop: _handleBackPressed,
       child: Scaffold(
-        extendBody: extendBody, //bottomNavigationBar 아래 영역 까지 그림
+        extendBody: extendBody,
+        //bottomNavigationBar 아래 영역 까지 그림
         drawer: const MenuDrawer(),
         body: Container(
           color: context.appColors.seedColor.getMaterialColorValues[200],
@@ -45,6 +51,19 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
             bottom: !extendBody,
             child: pages,
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final result = await WriteTodoDialog().show();
+            if (result != null) {
+              TodoDataHolder.of(context).notifier.addTodo(Todo(
+                id: DateTime.now().millisecondsSinceEpoch,
+                title: result.text,
+                dueDate: result.dateTime,
+              ));
+            }
+          },
+          child: const Icon(EvaIcons.plus),
         ),
         bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
@@ -67,8 +86,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
     final isFirstRouteInCurrentTab =
         (await _currentTabNavigationKey.currentState?.maybePop() == false);
     if (isFirstRouteInCurrentTab) {
-      if (_currentTab != TabItem.home) {
-        _changeTab(tabs.indexOf(TabItem.home));
+      if (_currentTab != TabItem.todo) {
+        _changeTab(tabs.indexOf(TabItem.todo));
         return false;
       }
     }

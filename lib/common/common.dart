@@ -19,7 +19,7 @@ export 'dart/extension/snackbar_context_extension.dart';
 export 'theme/color/abs_theme_colors.dart';
 export 'theme/shadows/abs_theme_shadows.dart';
 export 'util/async/flutter_async.dart';
-export 'widget/w_empty_expanded.dart';
+export 'widget/constant_widget.dart';
 export 'widget/w_height_and_width.dart';
 export 'widget/w_line.dart';
 export 'widget/w_tap.dart';
