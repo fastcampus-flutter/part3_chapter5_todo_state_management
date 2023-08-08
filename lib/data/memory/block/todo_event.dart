@@ -1,6 +1,24 @@
+import '../vo_todo.dart';
+
 /// Event being processed by [TodoBloc].
 abstract class TodoEvent {}
 
-class TodoStatusUpdated extends TodoEvent {}
-class TodoContentUpdated extends TodoEvent {}
-class TodoRemoved extends TodoEvent {}
+class TodoAddedEvent extends TodoEvent {}
+
+class TodoStatusUpdateEvent extends TodoEvent {
+  final Todo newTodo;
+
+  TodoStatusUpdateEvent(this.newTodo);
+}
+
+class TodoContentUpdatedEvent extends TodoEvent {
+  final Todo newTodo;
+
+  TodoContentUpdatedEvent(this.newTodo);
+}
+
+class TodoRemovedEvent extends TodoEvent {
+  final Todo removedTodo;
+
+  TodoRemovedEvent(this.removedTodo);
+}
