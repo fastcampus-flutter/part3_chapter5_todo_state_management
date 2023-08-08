@@ -30,7 +30,7 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
         dueDate: data.dueDate,
       );
       state.todoList.add(newTodo);
-      emitter(state);
+      updateState(emitter);
     });
   }
 
@@ -47,7 +47,7 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    emitter(state);
+    updateState(emitter);
   }
 
   void _editTodo(TodoContentUpdatedEvent event, Emitter<TodoBlocState> emitter) async {
@@ -58,7 +58,11 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
       todo.title = data.title;
       todo.dueDate = data.dueDate;
     });
-    emitter(state);
+    updateState(emitter);
+  }
+
+  void updateState(Emitter<TodoBlocState> emitter) {
+    emitter(TodoBlocState(state.status, state.todoList));
   }
 
   void _removeTodo(TodoRemovedEvent event, Emitter<TodoBlocState> emitter){

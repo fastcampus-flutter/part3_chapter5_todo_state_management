@@ -13,7 +13,7 @@ void main() async {
   await AppPreferences.init();
 
   Bloc.observer = AppBlocObserver();
-  Bloc.transformer = appEventTransformer;
+  //Bloc.transformer = appEventTransformer;
 
   runApp(EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ko')],
