@@ -44,4 +44,5 @@ extension ContextExtension on BuildContext {
   CustomTheme get themeType => CustomThemeHolder.of(this).theme;
 
   Function(CustomTheme) get changeTheme => CustomThemeHolder.of(this).changeTheme;
+
 }
