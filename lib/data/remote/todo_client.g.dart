@@ -12,9 +12,7 @@ class _TodoClient implements TodoClient {
   _TodoClient(
     this._dio, {
     this.baseUrl,
-  }) {
-    baseUrl ??= 'http://localhost:8080/';
-  }
+  });
 
   final Dio _dio;
 
