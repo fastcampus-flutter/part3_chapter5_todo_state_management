@@ -14,21 +14,57 @@ class TodoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RoundedContainer(
-        margin: const EdgeInsets.only(bottom: 6),
-        color: context.appColors.itemBackground,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+    return Dismissible(
+      onDismissed: (direction){
+        context.holder.removeTodo(todo);
+      },
+      background: RoundedContainer(
+        color: context.appColors.removeTodoBg,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            todo.dueDate.relativeDays.text.make(),
-            Row(
-              children: [
-                TodoStatusWidget(todo),
-                Expanded(child: todo.title.text.size(20).medium.make()),
-                IconButton(onPressed: () async {}, icon: const Icon(EvaIcons.editOutline))
-              ],
-            )
+            Width(20),
+            Icon(
+              EvaIcons.trash2Outline,
+              color: Colors.white,
+            ),
           ],
-        ).pOnly(top: 15, right: 15, left: 5, bottom: 10));
+        ),
+      ),
+      secondaryBackground: RoundedContainer(
+        color: context.appColors.removeTodoBg,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              EvaIcons.trash2Outline,
+              color: Colors.white,
+            ),
+            Width(20),
+          ],
+        ),
+      ),
+      key: ValueKey(todo.id),
+      child: RoundedContainer(
+          margin: const EdgeInsets.only(bottom: 6),
+          color: context.appColors.itemBackground,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              todo.dueDate.relativeDays.text.make(),
+              Row(
+                children: [
+                  TodoStatusWidget(todo),
+                  Expanded(child: todo.title.text.size(20).medium.make()),
+                  IconButton(
+                      onPressed: () async {
+                        context.holder.editTodo(todo);
+                      },
+                      icon: const Icon(EvaIcons.editOutline))
+                ],
+              )
+            ],
+          ).pOnly(top: 15, right: 15, left: 5, bottom: 10)),
+    );
   }
 }
