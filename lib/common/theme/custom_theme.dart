@@ -39,7 +39,6 @@ ThemeData lightTheme = ThemeData(
     // ),
     colorScheme: ColorScheme.fromSeed(seedColor: CustomTheme.light.appColors.seedColor));
 
-const darkColorSeed = Color(0xbcd5ff7e);
 ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     visualDensity: VisualDensity.adaptivePlatformDensity,

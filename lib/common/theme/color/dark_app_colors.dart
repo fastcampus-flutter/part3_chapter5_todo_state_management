@@ -1,3 +1,4 @@
+import 'package:fast_app_base/common/dart/extension/color_extension.dart';
 import 'package:fast_app_base/common/theme/color/abs_theme_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -42,4 +43,7 @@ class DarkAppColors extends AbstractThemeColors {
 
   @override
   Color get blueButtonBackground => AppColors.blue;
+
+  @override
+  Color get itemBackground => seedColor.getSwatchByBrightness(230);
 }
