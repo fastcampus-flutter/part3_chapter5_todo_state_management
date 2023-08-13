@@ -1,7 +1,7 @@
 import '../vo_todo.dart';
 
 /// Event being processed by [TodoBloc].
-abstract class TodoEvent {}
+sealed class TodoEvent {}
 
 class TodoAddedEvent extends TodoEvent {}
 
