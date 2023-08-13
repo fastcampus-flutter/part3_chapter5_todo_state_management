@@ -4,7 +4,7 @@ import 'package:fast_app_base/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'data/memory/todo_bloc.dart';
+import 'data/memory/todo_cubit.dart';
 
 class App extends StatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -36,8 +36,8 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return CustomThemeApp(
       child: Builder(builder: (context) {
-        return BlocProvider<TodoBloc>(
-          create: (BuildContext context) => TodoBloc(),
+        return BlocProvider<TodoCubit>(
+          create: (BuildContext context) => TodoCubit(),
           child: MaterialApp(
             navigatorKey: App.navigatorKey,
             localizationsDelegates: context.localizationDelegates,

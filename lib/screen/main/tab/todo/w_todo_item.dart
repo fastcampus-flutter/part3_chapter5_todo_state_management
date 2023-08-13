@@ -1,8 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/dart/extension/datetime_extension.dart';
-import 'package:fast_app_base/data/memory/block/todo_event.dart';
-import 'package:fast_app_base/data/memory/todo_bloc.dart';
+import 'package:fast_app_base/data/memory/todo_cubit.dart';
 import 'package:fast_app_base/screen/main/tab/todo/w_todo_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +17,7 @@ class TodoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todoBloc = context.watchTodoBloc;
+    final todoBloc = context.watchTodoCubit;
     return Dismissible(
       key: ValueKey(todo.id),
       background: RoundedContainer(
@@ -48,9 +47,9 @@ class TodoItem extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        todoBloc.add(TodoRemovedEvent(todo));
+        todoBloc.removeTodo(todo.id);
       },
-      child: BlocBuilder<TodoBloc, TodoBlocState>(
+      child: BlocBuilder<TodoCubit, TodoBlocState>(
         builder: (context, state) {
           debugPrint('check build');
 
@@ -66,7 +65,7 @@ class TodoItem extends StatelessWidget {
                     TodoStatusWidget(todo),
                     Expanded(child: todo.title.text.size(20).medium.make()),
                     IconButton(
-                        onPressed: () => todoBloc.add(TodoContentUpdatedEvent(todo)),
+                        onPressed: () => todoBloc.editTodo(todo),
                         icon: const Icon(EvaIcons.editOutline)),
                   ],
                 ),
