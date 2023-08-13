@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'block/block_status.dart';
 import 'block/todo_bloc_state.dart';
 
-class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
+class TodoBloc extends  Bloc<TodoEvent, TodoBlocState>  {
   final List<Todo> todoList = [];
 
   TodoBloc() : super(TodoBlocState(Status.initial, [])) {
@@ -21,7 +21,7 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  void _addTodo(TodoEvent event, Emitter<TodoBlocState> emitter) async {
+  void _addTodo(TodoEvent event, Emitter<TodoBlocState> emit) async {
     final result = await WriteTodoBottomSheet().show();
     result?.runIfSuccess((data) {
       final newTodo = Todo(
@@ -30,11 +30,11 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
         dueDate: data.dueDate,
       );
       state.todoList.add(newTodo);
-      updateState(emitter);
+      updateState(emit);
     });
   }
 
-  void _changeTodoStatus(TodoStatusUpdateEvent event, Emitter<TodoBlocState> emitter) async {
+  void _changeTodoStatus(TodoStatusUpdateEvent event, Emitter<TodoBlocState> emit) async {
     final todo = event.newTodo;
     switch (todo.status) {
       case TodoStatus.complete:
@@ -47,10 +47,10 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
       case TodoStatus.ongoing:
         todo.status = TodoStatus.complete;
     }
-    updateState(emitter);
+    updateState(emit);
   }
 
-  void _editTodo(TodoContentUpdatedEvent event, Emitter<TodoBlocState> emitter) async {
+  void _editTodo(TodoContentUpdatedEvent event, Emitter<TodoBlocState> emit) async {
     final todo = event.newTodo;
     final result = await WriteTodoBottomSheet(todoForEdit: todo).show();
     result?.runIfSuccess((data) {
@@ -58,14 +58,14 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState> {
       todo.title = data.title;
       todo.dueDate = data.dueDate;
     });
-    updateState(emitter);
+    updateState(emit);
   }
 
-  void updateState(Emitter<TodoBlocState> emitter) {
-    emitter(TodoBlocState(state.status, state.todoList));
+  void updateState(Emitter<TodoBlocState> emit) {
+    emit(TodoBlocState(state.status, state.todoList));
   }
 
-  void _removeTodo(TodoRemovedEvent event, Emitter<TodoBlocState> emitter){
+  void _removeTodo(TodoRemovedEvent event, Emitter<TodoBlocState> emit){
     state.todoList.remove(event.removedTodo);
   }
 }

@@ -6,5 +6,5 @@ class TodoBlocState {
   TodoBlocState(this.status, this.todoList);
 
   Status status;
-  List<Todo> todoList;
+  final List<Todo> todoList;
 }

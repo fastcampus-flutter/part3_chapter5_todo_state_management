@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'app.dart';
 import 'common/data/preference/app_preferences.dart';
 import 'data/memory/app_block/app_bloc_observer.dart';
-import 'data/memory/app_block/app_event_transformer.dart';
+//import 'data/memory/app_block/app_event_transformer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
