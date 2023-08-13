@@ -8,15 +8,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'block/block_status.dart';
 import 'block/todo_bloc_state.dart';
 
-class TodoBloc extends  Bloc<TodoEvent, TodoBlocState>  {
+class TodoBloc extends Bloc<TodoEvent, TodoBlocState> {
   final List<Todo> todoList = [];
 
-  TodoBloc() : super(TodoBlocState(Status.initial, [])) {
+  TodoBloc() : super(const TodoBlocState(Status.initial, [])) {
     on<TodoContentUpdatedEvent>(_editTodo);
     on<TodoRemovedEvent>(_removeTodo);
     on<TodoStatusUpdateEvent>(_changeTodoStatus);
     on<TodoAddedEvent>(_addTodo);
   }
+
   int get newId {
     return DateTime.now().millisecondsSinceEpoch;
   }
@@ -28,44 +29,52 @@ class TodoBloc extends  Bloc<TodoEvent, TodoBlocState>  {
         id: newId,
         title: data.title,
         dueDate: data.dueDate,
+        createdTime: DateTime.now(),
+        status: TodoStatus.incomplete,
       );
-      state.todoList.add(newTodo);
-      updateState(emit);
+      final oldList = List<Todo>.from(state.todoList);
+      oldList.add(newTodo);
+      emit(state.copyWith(todoList: oldList));
     });
   }
 
   void _changeTodoStatus(TodoStatusUpdateEvent event, Emitter<TodoBlocState> emit) async {
-    final todo = event.newTodo;
-    switch (todo.status) {
+    final eventTodo = event.updatedTodo;
+    TodoStatus newStatus = eventTodo.status;
+    switch (eventTodo.status) {
       case TodoStatus.complete:
         final result = await ConfirmDialog('다시 처음 상태로 변경하시겠어요?').show();
         result?.runIfSuccess((data) {
-          todo.status = TodoStatus.incomplete;
+          newStatus = TodoStatus.incomplete;
         });
       case TodoStatus.incomplete:
-        todo.status = TodoStatus.ongoing;
+        newStatus = TodoStatus.ongoing;
       case TodoStatus.ongoing:
-        todo.status = TodoStatus.complete;
+        newStatus = TodoStatus.complete;
     }
-    updateState(emit);
+    final oldCopiedList = List<Todo>.from(state.todoList);
+    oldCopiedList[oldCopiedList.indexOf(eventTodo)] = eventTodo.copyWith(status: newStatus);
+    emit(state.copyWith(todoList: oldCopiedList));
   }
 
   void _editTodo(TodoContentUpdatedEvent event, Emitter<TodoBlocState> emit) async {
-    final todo = event.newTodo;
-    final result = await WriteTodoBottomSheet(todoForEdit: todo).show();
+    final updatedTodo = event.updatedTodo;
+    final result = await WriteTodoBottomSheet(todoForEdit: updatedTodo).show();
     result?.runIfSuccess((data) {
-      todo.modifyTime = DateTime.now();
-      todo.title = data.title;
-      todo.dueDate = data.dueDate;
+      final newTodo = updatedTodo.copyWith(
+        modifyTime: DateTime.now(),
+        title: data.title,
+        dueDate: data.dueDate,
+      );
+      final oldCopiedList = List<Todo>.from(state.todoList);
+      oldCopiedList[oldCopiedList.indexOf(updatedTodo)] = newTodo;
+      emit(state.copyWith(todoList: oldCopiedList));
     });
-    updateState(emit);
   }
 
-  void updateState(Emitter<TodoBlocState> emit) {
-    emit(TodoBlocState(state.status, state.todoList));
-  }
-
-  void _removeTodo(TodoRemovedEvent event, Emitter<TodoBlocState> emit){
-    state.todoList.remove(event.removedTodo);
+  void _removeTodo(TodoRemovedEvent event, Emitter<TodoBlocState> emit) {
+    final copiedOldList = List<Todo>.from(state.todoList);
+    copiedOldList.removeWhere((element) => event.removedTodo.id == element.id);
+    emit(state.copyWith(todoList: copiedOldList));
   }
 }

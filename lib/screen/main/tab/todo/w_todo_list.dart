@@ -16,14 +16,13 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
-    final todoBloc = context.readTodoBloc;
     return BlocBuilder<TodoBloc, TodoBlocState>(
-      builder: (context, data) => todoBloc.state.todoList.isEmpty
+      builder: (context, data) => data.todoList.isEmpty
           ? '할일을 작성해보세요'.text.size(30).makeCentered()
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: todoBloc.state.todoList
+                children: data.todoList
                     .map((e) => TodoItem(
                           todo: e,
                         ))

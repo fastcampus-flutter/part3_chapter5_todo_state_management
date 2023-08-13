@@ -6,15 +6,15 @@ abstract class TodoEvent {}
 class TodoAddedEvent extends TodoEvent {}
 
 class TodoStatusUpdateEvent extends TodoEvent {
-  final Todo newTodo;
+  final Todo updatedTodo;
 
-  TodoStatusUpdateEvent(this.newTodo);
+  TodoStatusUpdateEvent(this.updatedTodo);
 }
 
 class TodoContentUpdatedEvent extends TodoEvent {
-  final Todo newTodo;
+  final Todo updatedTodo;
 
-  TodoContentUpdatedEvent(this.newTodo);
+  TodoContentUpdatedEvent(this.updatedTodo);
 }
 
 class TodoRemovedEvent extends TodoEvent {
