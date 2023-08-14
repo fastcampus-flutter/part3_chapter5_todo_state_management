@@ -1,6 +1,6 @@
 import '../vo_todo.dart';
 
-abstract class TodoEvent{}
+sealed class TodoEvent{}
 
 class TodoAddEvent extends TodoEvent{}
 
@@ -16,7 +16,7 @@ class TodoContentUpdateEvent  extends TodoEvent{
   TodoContentUpdateEvent(this.updatedTodo);
 }
 
-class TodoRemovedEvent  extends TodoEvent{
+class TodoRemovedEvent extends TodoEvent{
   final Todo removedTodo;
 
   TodoRemovedEvent(this.removedTodo);
