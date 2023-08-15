@@ -1,14 +1,21 @@
 import 'package:fast_app_base/data/memory/todo_status.dart';
 import 'package:fast_app_base/data/memory/vo_todo.dart';
 import 'package:fast_app_base/screen/dialog/d_confirm.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:get/instance_manager.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../screen/main/write/d_write_todo.dart';
 
-class TodoDataHolder extends GetxController {
-  final RxList<Todo> todoList = <Todo>[].obs;
+final userProvider = FutureProvider<String>((ref) => 'abc');
+
+final todoDataProvider = StateNotifierProvider<TodoDataHolder, List<Todo>>((ref) {
+  final userID = ref.watch(userProvider);
+  debugPrint(userID.value!);
+  return TodoDataHolder();
+});
+
+class TodoDataHolder extends StateNotifier<List<Todo>> {
+  TodoDataHolder() : super([]);
 
   void changeTodoStatus(Todo todo) async {
     switch (todo.status) {
@@ -22,17 +29,18 @@ class TodoDataHolder extends GetxController {
           todo.status = TodoStatus.incomplete;
         });
     }
-    todoList.refresh();
+    state = List.of(state);
   }
 
   void addTodo() async {
     final result = await WriteTodoDialog().show();
     if (result != null) {
-      todoList.add(Todo(
+      state.add(Todo(
         id: DateTime.now().millisecondsSinceEpoch,
         title: result.text,
         dueDate: result.dateTime,
       ));
+      state = List.of(state);
     }
   }
 
@@ -41,16 +49,16 @@ class TodoDataHolder extends GetxController {
     if (result != null) {
       todo.title = result.text;
       todo.dueDate = result.dateTime;
-      todoList.refresh();
+      state = List.of(state);
     }
   }
 
   void removeTodo(Todo todo) {
-    todoList.remove(todo);
-    todoList.refresh();
+    state.remove(todo);
+    state = List.of(state);
   }
 }
 
-mixin class TodoDataProvider {
-  late final TodoDataHolder todoData = Get.find();
+extension TodoListHolderProvider on WidgetRef {
+  TodoDataHolder get readTodoHolder => read(todoDataProvider.notifier);
 }
